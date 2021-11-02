@@ -33,6 +33,7 @@ public class WolfCity {
                     System.out.println("What operation would you like to perform?");
                     System.out.println("1. Add a member to the system");
                     System.out.println("2. Edit a member");
+                    System.out.println("3. Delete a member");
                     Scanner scan = new Scanner(System.in);
                     int num = scan.nextInt();
                     if (num == 1) {
@@ -95,6 +96,11 @@ public class WolfCity {
                             member.setActiveStatus("Inactive");
                         }
                         memberController.updateMemberInformation(member);
+                    } else if (num == 3) {
+                        System.out.println("Enter the member's id");
+                        int memberID = scan.nextInt();
+                        scan.nextLine();
+                        memberController.deleteMemberInformation(memberID);
                     }
                 }
             } finally {

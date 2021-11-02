@@ -35,4 +35,11 @@ public class MemberController {
         preparedStatement.setInt(7, member.getMemberID());
         preparedStatement.execute();
     }
+
+    public void deleteMemberInformation(int memberID) throws SQLException {
+        String query = "DELETE FROM Member WHERE memberID = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, memberID);
+        preparedStatement.execute();
+    }
 }
