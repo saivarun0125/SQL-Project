@@ -10,7 +10,7 @@ public class WolfCity {
 // Update your user and password info here!
 
     private static final String user = "jjboike";
-    private static final String password = "200303143";
+    private static final String password = "wolfpackjack";
 
     public static void main(String[] args) {
         try {
@@ -37,6 +37,7 @@ public class WolfCity {
                     if (num == 1) {
                         System.out.println("Enter staff ID");
                         int staffID = scan.nextInt();
+                        scan.nextLine();
                         System.out.println("Enter Member's first name");
                         String firstName = scan.nextLine();
                         System.out.println("Enter Member's last name");
