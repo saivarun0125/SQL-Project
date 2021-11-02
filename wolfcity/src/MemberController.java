@@ -16,10 +16,23 @@ public class MemberController {
         preparedStatement.setInt(1, member.getStaffID());
         preparedStatement.setString(2, member.getFirstName());
         preparedStatement.setString(3, member.getLastName());
-        preparedStatement.setBoolean(4, member.getActiveStatus());
+        preparedStatement.setString(4, member.getActiveStatus());
         preparedStatement.setString(5, member.getEmail());
         preparedStatement.setString(6, member.getAddress());
-        preparedStatement.setString(7, member.getPhone());
+        preparedStatement.setString(7, member.getPhoneNumber());
+        preparedStatement.execute();
+    }
+
+    public void updateMemberInformation(Member member) throws SQLException {
+        String query = "UPDATE Member set firstName = ?, lastName = ?, activeStatus = ?, email = ?, address = ?, phoneNumber = ? WHERE memberID = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setString(1, member.getFirstName());
+        preparedStatement.setString(2, member.getLastName());
+        preparedStatement.setString(3, member.getActiveStatus());
+        preparedStatement.setString(4, member.getEmail());
+        preparedStatement.setString(5, member.getAddress());
+        preparedStatement.setString(6, member.getPhoneNumber());
+        preparedStatement.setInt(7, member.getMemberID());
         preparedStatement.execute();
     }
 }

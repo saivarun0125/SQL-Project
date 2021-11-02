@@ -5,12 +5,12 @@ public class Member {
     private int staffID;
     private String firstName;
     private String lastName;
-    private Boolean activeStatus;
+    private String activeStatus;
     private String email;
     private String address;
-    private String phone;
+    private String phoneNumber;
 
-    public Member(int memberID, int staffID, String firstName, String lastName, Boolean activeStatus, String email, String address, String phone) {
+    public Member(int memberID, int staffID, String firstName, String lastName, String activeStatus, String email, String address, String phoneNumber) {
         this.memberID = memberID;
         this.staffID = staffID;
         this.firstName = firstName;
@@ -18,7 +18,7 @@ public class Member {
         this.activeStatus = activeStatus;
         this.email = email;
         this.address = address;
-        this.phone = phone;
+        this.phoneNumber = phoneNumber;
     }
 
     public int getMemberID() {
@@ -42,7 +42,10 @@ public class Member {
     }
 
     public void setFirstName(String firstName) {
-        this.firstName = firstName;
+        if (firstName != null && firstName.length() != 0) {
+            this.firstName = firstName;
+        }
+
     }
 
     public String getLastName() {
@@ -50,14 +53,17 @@ public class Member {
     }
 
     public void setLastName(String lastName) {
-        this.lastName = lastName;
+        if (lastName != null && lastName.length() != 0) {
+            this.lastName = lastName;
+        }
+
     }
 
-    public Boolean getActiveStatus() {
+    public String getActiveStatus() {
         return activeStatus;
     }
 
-    public void setActiveStatus(Boolean activeStatus) {
+    public void setActiveStatus(String activeStatus) {
         this.activeStatus = activeStatus;
     }
 
@@ -66,7 +72,9 @@ public class Member {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        if (email != null && email.length() != 0) {
+            this.email = email;
+        }
     }
 
     public String getAddress() {
@@ -74,14 +82,19 @@ public class Member {
     }
 
     public void setAddress(String address) {
-        this.address = address;
+        if (address != null && address.length() != 0) {
+            this.address = address;
+        }
+
     }
 
-    public String getPhone() {
-        return phone;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setPhoneNumber(String phoneNumber) {
+        if (phoneNumber != null && phoneNumber.length() != 0) {
+            this.phoneNumber = phoneNumber;
+        }
     }
 }
