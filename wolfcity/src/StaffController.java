@@ -62,7 +62,7 @@ public class StaffController {
     }
 
     public void updateStaffInformation(Staff staff) throws SQLException {
-        String query = "UPDATE Staff set name = ?, age = ?, storeID = ?, homeAddress = ?, phoneNumber = ?, email = ?, employmentDate = ? WHERE staffID = ?";
+        String query = "UPDATE Staff set name = ?, age = ?, storeID = ?, homeAddress = ?, phoneNumber = ?, email = ?, employmentDate = ? WHERE staffID = ?;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setString(1, staff.getName());
         preparedStatement.setInt(2, staff.getAge());
@@ -76,7 +76,21 @@ public class StaffController {
     }
 
     public void deleteStaffInformation(int staffID) throws SQLException {
-        String query = "DELETE FROM Staff WHERE staffID = ?";
+
+        String query = "SELECT * FROM Staff where staffID = ?";
+        PreparedStatement st = connection.prepareStatement(query);
+        st.setInt(1, staffID);
+        ResultSet set = st.executeQuery();
+        set.next();
+        switch (set.getString("jobTitle")) {
+            case "Admin" : deleteAdmin(staffID);
+            case "RegistrationOperator": deleteRegistrationOperator(staffID);
+            case "WarehouseOperator": deleteWarehouseOperator(staffID);
+            case "Cashier": deleteCashier(staffID);
+            case "BillingStaff": deleteBillingStaff(staffID);
+        };
+
+        query = "DELETE FROM Staff WHERE staffID = ?;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setInt(1, staffID);
         preparedStatement.execute();
@@ -87,5 +101,40 @@ public class StaffController {
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         ResultSet set = preparedStatement.executeQuery();
         Utility.printResultSet(set);
+    }
+
+    private void deleteAdmin(int staffID) throws SQLException {
+        String query = "DELETE FROM Admin WHERE staffID = ?;";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, staffID);
+        preparedStatement.execute();
+    }
+
+    private void deleteRegistrationOperator(int staffID) throws SQLException {
+        String query = "DELETE FROM RegistrationOperator WHERE staffID = ?;";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, staffID);
+        preparedStatement.execute();
+    }
+
+    private void deleteBillingStaff(int staffID) throws SQLException {
+        String query = "DELETE FROM BillingStaff WHERE staffID = ?;";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, staffID);
+        preparedStatement.execute();
+    }
+
+    private void deleteWarehouseOperator(int staffID) throws SQLException {
+        String query = "DELETE FROM WarehouseOperator WHERE staffID = ?;";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, staffID);
+        preparedStatement.execute();
+    }
+
+    private void deleteCashier(int staffID) throws SQLException {
+        String query = "DELETE FROM Cashier WHERE staffID = ?;";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, staffID);
+        preparedStatement.execute();
     }
 }

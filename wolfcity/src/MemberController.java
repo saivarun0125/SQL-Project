@@ -30,7 +30,7 @@ public class MemberController {
     }
 
     public void updateMemberInformation(Member member) throws SQLException {
-        String query = "UPDATE Member set firstName = ?, lastName = ?, activeStatus = ?, email = ?, address = ?, phoneNumber = ? WHERE memberID = ?";
+        String query = "UPDATE Member set firstName = ?, lastName = ?, activeStatus = ?, email = ?, address = ?, phoneNumber = ? WHERE memberID = ?;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setString(1, member.getFirstName());
         preparedStatement.setString(2, member.getLastName());
@@ -43,7 +43,7 @@ public class MemberController {
     }
 
     public void deleteMemberInformation(int memberID) throws SQLException {
-        String query = "DELETE FROM Member WHERE memberID = ?";
+        String query = "DELETE FROM Member WHERE memberID = ?;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setInt(1, memberID);
         preparedStatement.execute();

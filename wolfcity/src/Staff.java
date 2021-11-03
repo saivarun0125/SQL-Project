@@ -54,7 +54,10 @@ public class Staff {
     }
 
     public void setName(String name) {
-        this.name = name;
+        if (name != null && name.length() != 0) {
+            this.name = name;
+        }
+
     }
 
     public int getAge() {
@@ -78,7 +81,9 @@ public class Staff {
     }
 
     public void setHomeAddress(String homeAddress) {
-        this.homeAddress = homeAddress;
+        if (homeAddress != null && homeAddress.length() != 0) {
+            this.homeAddress = homeAddress;
+        }
     }
 
     public String getJobTitle() {
@@ -94,7 +99,9 @@ public class Staff {
     }
 
     public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+        if (phoneNumber != null && phoneNumber.length() != 0) {
+            this.phoneNumber = phoneNumber;
+        }
     }
 
     public String getEmail() {
@@ -102,7 +109,9 @@ public class Staff {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        if (email != null && email.length() != 0) {
+            this.email = email;
+        }
     }
 
     public Timestamp getEmploymentDate() {
