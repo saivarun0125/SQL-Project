@@ -1,6 +1,12 @@
+import utlities.Utility;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class MemberController {
 
@@ -41,5 +47,12 @@ public class MemberController {
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setInt(1, memberID);
         preparedStatement.execute();
+    }
+
+    public void printMemberList() throws SQLException {
+        String query = "SELECT * FROM Member;";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        ResultSet set = preparedStatement.executeQuery();
+        Utility.printResultSet(set);
     }
 }

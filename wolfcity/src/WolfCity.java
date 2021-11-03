@@ -1,4 +1,6 @@
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Scanner;
 
 public class WolfCity {
@@ -28,14 +30,19 @@ public class WolfCity {
                 // DriverManager list that recognizes the URL jdbcURL
                 connection = DriverManager.getConnection(jdbcURL, user, password);
                 MemberController memberController = new MemberController(connection);
+                StaffController staffController = new StaffController(connection);
 
                 while (true) {
                     System.out.println("What operation would you like to perform?");
                     System.out.println("1. Add a member to the system");
                     System.out.println("2. Edit a member");
                     System.out.println("3. Delete a member");
+                    System.out.println("4. Add a staff member to the system");
+                    System.out.println("5. Edit a staff member");
+                    System.out.println("6. Delete a staff member");
                     Scanner scan = new Scanner(System.in);
                     int num = scan.nextInt();
+                    scan.nextLine();
                     if (num == 1) {
                         System.out.println("Enter staff ID");
                         int staffID = scan.nextInt();
@@ -54,6 +61,9 @@ public class WolfCity {
                                 lastName, "Active", email, address, phone);
                         memberController.enterMemberInformation(member);
                     } else if (num == 2) {
+                        System.out.println("Here are all of the Members in the system");
+
+                        memberController.printMemberList();
                         System.out.println("Which member would you like to edit");
 
                         int memberID = scan.nextInt();
@@ -67,7 +77,6 @@ public class WolfCity {
                                 set.getString("firstName"), set.getString("lastName"),
                                 set.getString("activeStatus"), set.getString("email"),
                                 set.getString("address"), set.getString("phoneNumber"));
-
                         scan.nextLine();
                         System.out.println("Edit this member's attributes");
                         System.out.println("Leave attributes blank to not edit them");
@@ -97,7 +106,91 @@ public class WolfCity {
                         }
                         memberController.updateMemberInformation(member);
                     } else if (num == 3) {
-                        System.out.println("Enter the member's id");
+                        System.out.println("Here are all of the Members in the system");
+                        memberController.printMemberList();
+                        System.out.println("Which member would you like to delete?");
+                        int memberID = scan.nextInt();
+                        scan.nextLine();
+                        memberController.deleteMemberInformation(memberID);
+                    } else if (num == 4) {
+                        System.out.println("Enter the Staff Member's name");
+                        String name = scan.nextLine();
+                        System.out.println("Enter the staff member's age");
+                        int age = scan.nextInt();
+                        scan.nextLine();
+                        System.out.println("Enter the storeID attached to the staff member");
+                        int storeID = scan.nextInt();
+                        scan.nextLine();
+                        System.out.println("Enter staff member's address");
+                        String address = scan.nextLine();
+                        System.out.println("Enter staff member's job title (Admin, RegistrationOperator, WarehouseOperator, Cashier, BillingStaff");
+                        String jobTitle = scan.nextLine();
+                        System.out.println("Enter Member's phone number");
+                        String phone = scan.nextLine();
+                        System.out.println("Enter staff member's email");
+                        String email = scan.nextLine();
+
+                        Staff.StaffType type = switch (jobTitle) {
+                            case "Admin" -> Staff.StaffType.ADMIN;
+                            case "RegistrationOperator" -> Staff.StaffType.REGISTRATION_OPERATOR;
+                            case "WarehouseOperator" -> Staff.StaffType.WAREHOUSE_OPERATOR;
+                            case "Cashier" -> Staff.StaffType.CASHIER;
+                            case "BillingStaff" -> Staff.StaffType.BILLING_STAFF;
+                            default -> Staff.StaffType.CASHIER;
+                        };
+
+                        Staff staff = new Staff(-1, name, age,
+                                storeID, address, jobTitle, phone, email, java.sql.Timestamp.valueOf(LocalDateTime.now()), type);
+                        staffController.enterStaffInformation(staff);
+                    } else if (num == 5) {
+                        System.out.println("Here are all of the Staff members in the system");
+
+                        staffController.printStaffList();
+                        System.out.println("Which member would you like to edit");
+
+                        int memberID = scan.nextInt();
+                        String query = "SELECT * FROM Member where memberID = ?";
+                        PreparedStatement st = connection.prepareStatement(query);
+                        st.setInt(1, memberID);
+                        ResultSet set = st.executeQuery();
+                        set.next();
+                        System.out.println(set);
+                        Member member = new Member(set.getInt("memberID"), set.getInt("staffID"),
+                                set.getString("firstName"), set.getString("lastName"),
+                                set.getString("activeStatus"), set.getString("email"),
+                                set.getString("address"), set.getString("phoneNumber"));
+                        scan.nextLine();
+                        System.out.println("Edit this member's attributes");
+                        System.out.println("Leave attributes blank to not edit them");
+                        System.out.println();
+                        System.out.println("Enter Member's first name");
+                        String firstName = scan.nextLine();
+                        member.setFirstName(firstName);
+                        System.out.println("Enter Member's last name");
+                        String lastName = scan.nextLine();
+                        member.setLastName(lastName);
+                        System.out.println("Enter Member's email");
+                        String email = scan.nextLine();
+                        member.setEmail(email);
+                        System.out.println("Enter Member's address");
+                        String address = scan.nextLine();
+                        member.setAddress(address);
+                        System.out.println("Enter Member's phone number");
+                        String phone = scan.nextLine();
+                        member.setPhoneNumber(phone);
+                        System.out.println("Enter Member's active status (y/n)");
+                        String activeStatus = scan.nextLine();
+                        char ch = activeStatus.charAt(0);
+                        if (ch == 'y') {
+                            member.setActiveStatus("Active");
+                        } else {
+                            member.setActiveStatus("Inactive");
+                        }
+                        memberController.updateMemberInformation(member);
+                    } else if (num == 6) {
+                        System.out.println("Here are all of the Staff members in the system");
+                        staffController.printStaffList();
+                        System.out.println("Which member would you like to delete?");
                         int memberID = scan.nextInt();
                         scan.nextLine();
                         memberController.deleteMemberInformation(memberID);
@@ -118,6 +211,9 @@ public class WolfCity {
     static void editMember(MemberController memberController, Scanner scan) {
 
     }
+
+
+
 
     static void close(Connection connection) {
         if(connection != null) {
