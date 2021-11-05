@@ -3,6 +3,8 @@ package utlities;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.GregorianCalendar;
 
 public class Utility {
 
@@ -18,5 +20,11 @@ public class Utility {
             }
             System.out.println("");
         }
+    }
+
+    public static Timestamp getTimestampObject(int year, int month, int day) {
+        GregorianCalendar date = new GregorianCalendar(year, month, day);
+        long ms = date.getTimeInMillis();
+        return new Timestamp(ms);
     }
 }

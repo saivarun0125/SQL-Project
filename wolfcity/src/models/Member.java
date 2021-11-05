@@ -1,3 +1,5 @@
+package models;
+
 public class Member {
 
     // Set to -1 if object has not been created yet

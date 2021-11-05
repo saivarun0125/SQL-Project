@@ -1,11 +1,11 @@
+package models;
+
 import java.sql.Date;
 import java.sql.Timestamp;
 
 public class Staff {
     // Set to -1 if object has not been created yet
-    public enum StaffType {
-        CASHIER, WAREHOUSE_OPERATOR, BILLING_STAFF, ADMIN, REGISTRATION_OPERATOR
-    }
+
 
     private int staffID;
     private String name;

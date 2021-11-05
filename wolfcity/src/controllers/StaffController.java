@@ -1,9 +1,10 @@
+package controllers;
+
+import models.Staff;
+import models.StaffType;
 import utlities.Utility;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class StaffController {
 
@@ -35,25 +36,25 @@ public class StaffController {
         }
         staff.setStaffID(staffID);
         System.out.println(staffID);
-        Staff.StaffType type = staff.getType();
+        StaffType type = staff.getType();
 
-        if (type == Staff.StaffType.REGISTRATION_OPERATOR) {
+        if (type == StaffType.REGISTRATION_OPERATOR) {
             query = "INSERT INTO RegistrationOperator (staffID) VALUES (?)";
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, staff.getStaffID());
-        } else if (type == Staff.StaffType.CASHIER) {
+        } else if (type == StaffType.CASHIER) {
             query = "INSERT INTO Cashier (staffID) VALUES (?)";
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, staff.getStaffID());
-        } else if (type == Staff.StaffType.ADMIN) {
+        } else if (type == StaffType.ADMIN) {
             query = "INSERT INTO Admin (staffID) VALUES (?)";
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, staff.getStaffID());
-        } else if (type == Staff.StaffType.WAREHOUSE_OPERATOR) {
+        } else if (type == StaffType.WAREHOUSE_OPERATOR) {
             query = "INSERT INTO WarehouseOperator (staffID) VALUES (?)";
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, staff.getStaffID());
-        } else if (type == Staff.StaffType.BILLING_STAFF) {
+        } else if (type == StaffType.BILLING_STAFF) {
             query = "INSERT INTO BillingStaff (staffID) VALUES (?)";
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, staff.getStaffID());
