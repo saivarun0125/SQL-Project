@@ -7,6 +7,7 @@ public class Member {
     private int staffID;
     private String firstName;
     private String lastName;
+    /** "Active" or "Inactive" */
     private String activeStatus;
     private String email;
     private String address;

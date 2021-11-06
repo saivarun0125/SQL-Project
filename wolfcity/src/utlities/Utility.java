@@ -9,6 +9,12 @@ import java.util.GregorianCalendar;
 public class Utility {
 
 
+    /**
+     * Prints out the result of a select query
+     * Use this to print out list of objects to be deleted or edited when user makes selection
+     * @param rs results of query
+     * @throws SQLException e
+     */
     public static void printResultSet(ResultSet rs) throws SQLException {
         ResultSetMetaData rsmd = rs.getMetaData();
         int cols = rsmd.getColumnCount();
@@ -22,8 +28,18 @@ public class Utility {
         }
     }
 
+    /**
+     * Gets a timestamp object by passing in a year, month and day
+     * 0 <= month <= 11
+     * 1 <= day <= 31
+     * @param year year
+     * @param month month
+     * @param day day
+     * @return Timestamp object
+     */
     public static Timestamp getTimestampObject(int year, int month, int day) {
         GregorianCalendar date = new GregorianCalendar(year, month, day);
+        System.out.print(date.toString());
         long ms = date.getTimeInMillis();
         return new Timestamp(ms);
     }

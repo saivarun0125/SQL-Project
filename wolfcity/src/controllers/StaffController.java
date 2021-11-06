@@ -104,6 +104,13 @@ public class StaffController {
         Utility.printResultSet(set);
     }
 
+    public void printRegistrationOperatorList() throws SQLException {
+        String query = "SELECT * FROM RegistrationOperator;";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        ResultSet set = preparedStatement.executeQuery();
+        Utility.printResultSet(set);
+    }
+
     private void deleteAdmin(int staffID) throws SQLException {
         String query = "DELETE FROM Admin WHERE staffID = ?;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
