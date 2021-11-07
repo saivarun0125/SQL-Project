@@ -1,4 +1,69 @@
 package models;
 
+import java.sql.Timestamp;
+
 public class Inventory {
+    private int inventoryID;
+    private int amount;
+    private float price;
+    private int productID;
+    private Timestamp expirationDate;
+    private Timestamp manufacturingDate;
+
+    public Inventory(int inventoryID, int amount, float price, int productID, Timestamp expirationDate, Timestamp manufacturingDate) {
+        this.inventoryID = inventoryID;
+        this.amount = amount;
+        this.price = price;
+        this.productID = productID;
+        this.expirationDate = expirationDate;
+        this.manufacturingDate = manufacturingDate;
+    }
+
+    public int getInventoryID() {
+        return inventoryID;
+    }
+
+    public void setInventoryID(int inventoryID) {
+        this.inventoryID = inventoryID;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
+    public float getPrice() {
+        return price;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
+    }
+
+    public int getProductID() {
+        return productID;
+    }
+
+    public void setProductID(int productID) {
+        this.productID = productID;
+    }
+
+    public Timestamp getExpirationDate() {
+        return expirationDate;
+    }
+
+    public void setExpirationDate(Timestamp expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    public Timestamp getManufacturingDate() {
+        return manufacturingDate;
+    }
+
+    public void setManufacturingDate(Timestamp manufacturingDate) {
+        this.manufacturingDate = manufacturingDate;
+    }
 }

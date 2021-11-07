@@ -26,6 +26,7 @@ public class WolfCity {
     private static WarehouseController warehouseController;
     private static SupplierController supplierController;
     private static MembershipController membershipController;
+    private static InventoryController inventoryController;
 
     public static void main(String[] args) {
         try {
@@ -47,6 +48,7 @@ public class WolfCity {
                 supplierController = new SupplierController(connection);
                 memberController = new MemberController(connection);
                 membershipController = new MembershipController(connection);
+                inventoryController = new InventoryController(connection);
 
 
                 while (true) {
@@ -75,6 +77,8 @@ public class WolfCity {
                     System.out.println("22. Add a membership to the system");
                     System.out.println("23. Edit a membership");
                     System.out.println("24. Delete a membership");
+                    System.out.println("25. Add inventory");
+                    System.out.println("26. Update inventory");
 
                     scan = new Scanner(System.in);
                     int num = scan.nextInt();
@@ -127,6 +131,10 @@ public class WolfCity {
                         editMembership();
                     } else if (num == 24) {
                         deleteMembership();
+                    } else if (num == 25) {
+                        addInventory();
+                    } else if (num == 26) {
+                        updateInventory();
                     }
                 }
             } finally {
@@ -759,6 +767,173 @@ public class WolfCity {
         scan.nextLine();
         membershipController.deleteMembershipInformation(membershipID);
     }
+
+
+
+
+
+    private static void addInventory() throws SQLException {
+        System.out.println("Enter the amount of inventory for the product");
+        int amount = scan.nextInt();
+        scan.nextLine();
+        System.out.println("Enter the price of the product");
+        float price = scan.nextFloat();
+        scan.nextLine();
+
+        System.out.println("Here is a list of all products in the system:");
+        productController.printProductList();
+
+        System.out.println("Enter the productID of the product this inventory is for");
+        int productID = scan.nextInt();
+        scan.nextLine();
+
+
+        System.out.println("Enter the inventory's expiration date");
+        System.out.print("Year: ");
+        int year = scan.nextInt();
+        scan.nextLine();
+        System.out.print("Month: ");
+        int month =scan.nextInt();
+        scan.nextLine();
+        System.out.print("Day: ");
+        int day = scan.nextInt();
+        scan.nextLine();
+        Timestamp expirationDate = Utility.getTimestampObject(year, month - 1, day);
+
+        System.out.println("Enter the inventory's manufacturing date");
+        System.out.print("Year: ");
+        year = scan.nextInt();
+        scan.nextLine();
+        System.out.print("Month: ");
+        month =scan.nextInt();
+        scan.nextLine();
+        System.out.print("Day: ");
+        day = scan.nextInt();
+        scan.nextLine();
+        Timestamp manufacturingDate = Utility.getTimestampObject(year, month - 1, day);
+
+        System.out.println("Is this inventory for a store or a warehouse?");
+        System.out.println("Store (s)");
+        System.out.println("Warehouse (w)");
+        String inventoryType = scan.nextLine();
+
+        Inventory inventory = null;
+
+        if (inventoryType.charAt(0) == 's') {
+            System.out.println("Here are all of the stores in the system:");
+            storeController.printStoreList();
+            System.out.println("Enter the storeID for this inventory entry");
+            int storeID = scan.nextInt();
+            scan.nextLine();
+            inventory = new StoreInventory(-1, amount, price, productID, expirationDate, manufacturingDate, storeID);
+        } else if (inventoryType.charAt(0) == 'w') {
+            System.out.println("Here are all of the warehouses in the system:");
+            warehouseController.printWarehouseList();
+            System.out.println("Enter the warehouseID for this inventory entry");
+            int warehouseID = scan.nextInt();
+            scan.nextLine();
+            inventory = new WarehouseInventory(-1, amount, price, productID, expirationDate, manufacturingDate, warehouseID);
+        }
+        assert inventory != null;
+        inventoryController.enterInventoryInformation(inventory);
+    }
+
+    static void updateInventory() throws SQLException {
+        System.out.println("Here is all of the inventory in the system");
+        inventoryController.printInventoryList();
+        System.out.println("Which inventory would you like to edit");
+        int inventoryID = scan.nextInt();
+
+        PreparedStatement preparedStatement = connection.prepareStatement(InventoryController.SELECT_ALL);
+        ResultSet set = preparedStatement.executeQuery();
+        Inventory inventory = null;
+        if (set.next()) {
+            if (set.getInt("warehouseID") != 0) {
+                inventory = new WarehouseInventory(inventoryID, set.getInt("amount"),
+                        set.getFloat("price"), set.getInt("productID"),
+                        set.getTimestamp("expirationDate"), set.getTimestamp("manufacturingDate"),
+                        set.getInt("warehouseID"));
+            } else if (set.getInt("storeID") != 0) {
+                inventory = new StoreInventory(inventoryID, set.getInt("amount"),
+                        set.getFloat("price"), set.getInt("productID"),
+                        set.getTimestamp("expirationDate"), set.getTimestamp("manufacturingDate"),
+                        set.getInt("storeID"));
+            }
+
+
+            System.out.println("Enter the amount of inventory for the product");
+            int amount = scan.nextInt();
+            scan.nextLine();
+            assert inventory != null;
+            inventory.setAmount(amount);
+            System.out.println("Enter the price of the product");
+            float price = scan.nextFloat();
+            scan.nextLine();
+            inventory.setPrice(price);
+
+            System.out.println("Here is a list of all products in the system:");
+            productController.printProductList();
+
+            System.out.println("Enter the productID of the product this inventory is for");
+            int productID = scan.nextInt();
+            scan.nextLine();
+            inventory.setProductID(productID);
+
+
+            System.out.println("Enter the inventory's expiration date");
+            System.out.print("Year: ");
+            int year = scan.nextInt();
+            scan.nextLine();
+            System.out.print("Month: ");
+            int month =scan.nextInt();
+            scan.nextLine();
+            System.out.print("Day: ");
+            int day = scan.nextInt();
+            scan.nextLine();
+            Timestamp expirationDate = Utility.getTimestampObject(year, month - 1, day);
+            inventory.setExpirationDate(expirationDate);
+            System.out.println("Enter the inventory's manufacturing date");
+            System.out.print("Year: ");
+            year = scan.nextInt();
+            scan.nextLine();
+            System.out.print("Month: ");
+            month =scan.nextInt();
+            scan.nextLine();
+            System.out.print("Day: ");
+            day = scan.nextInt();
+            scan.nextLine();
+            Timestamp manufacturingDate = Utility.getTimestampObject(year, month - 1, day);
+            inventory.setManufacturingDate(manufacturingDate);
+
+            inventoryController.updateInventoryInformation(inventory);
+
+        }
+
+
+
+
+
+    }
+
+//    static void deleteInventory() throws SQLException {
+//        System.out.println("Here are all of the inventory in the system");
+//        inventoryController.printInventoryList();
+//        System.out.println("Which inventory would you like to delete?");
+//        int inventoryID = scan.nextInt();
+//        scan.nextLine();
+//        supplierController.deleteSupplierInformation(inventoryID);
+//    }
+
+
+
+
+
+
+
+
+
+
+
 
 
     static void close(Connection connection) {
