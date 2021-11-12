@@ -18,20 +18,7 @@ import controllers.StoreController;
 import controllers.SupplierController;
 import controllers.TransactionController;
 import controllers.WarehouseController;
-import models.Discount;
-import models.Inventory;
-import models.Level;
-import models.Member;
-import models.Membership;
-import models.Product;
-import models.Staff;
-import models.StaffType;
-import models.Store;
-import models.StoreInventory;
-import models.Supplier;
-import models.Transaction;
-import models.Warehouse;
-import models.WarehouseInventory;
+import models.*;
 import utlities.Utility;
 
 public class WolfCity {
@@ -196,12 +183,18 @@ public class WolfCity {
                     }
                     else if ( num == 26 ) {
                         updateInventory();
-                    } else if ( num == 27 ) {
+                    }
+                    else if ( num == 27 ) {
                     	addTransaction();
-                    } else if ( num == 28 ) {
+                    }
+                    else if ( num == 28 ) {
                     	editTransaction();
-                    } else if ( num == 29 ) {
+                    }
+                    else if ( num == 29 ) {
                     	deleteTransaction();
+                    }
+                    else if (num == 34) {
+                        addTransfer();
                     }
                 }
             }
@@ -1057,9 +1050,45 @@ public class WolfCity {
             inventoryController.updateInventoryInformation( inventory );
 
         }
-        
-        
+    }
 
+    static void addTransfer() throws SQLException {
+
+        System.out.println("This is the current state of the warehouse inventory");
+        inventoryController.printWarehouseInventoryList();
+
+
+        System.out.println("Here are all of the warehouse operators");
+        staffController.printWarehouseOperatorList();
+
+        System.out.println("Enter the Warehouse Operator's ID");
+        int staffID = scan.nextInt();
+        scan.nextLine();
+
+        System.out.println("Here are all of the products");
+        productController.printProductList();
+
+        System.out.println("Enter the transferred product's ID");
+        int productID = scan.nextInt();
+        scan.nextLine();
+
+        System.out.println("Enter the amount to be transferred");
+        int quantity = scan.nextInt();
+        scan.nextLine();
+
+        System.out.println("Here are all of the warehouses");
+        warehouseController.printWarehouseList();
+
+        System.out.println("Enter the ID of the origin warehouse");
+        int originWarehouseID = scan.nextInt();
+        scan.nextLine();
+
+        System.out.println("Enter the ID of the destination warehouse");
+        int destinationWarehouseID = scan.nextInt();
+        scan.nextLine();
+
+        Transfers transfer = new Transfers(-1, staffID, productID, quantity, originWarehouseID, destinationWarehouseID);
+        inventoryController.transferProduct(transfer);
     }
 
     // static void deleteInventory() throws SQLException {

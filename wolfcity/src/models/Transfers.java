@@ -7,14 +7,24 @@ public class Transfers {
     private int productID;
     private int quantity;
     private int originWarehouseID;
+    private int destinationWarehouseID;
 
-    public Transfers ( final int transferID, final int staffID, final int productID, final int quantity,
-            final int originWarehouseID ) {
+    public int getDestinationWarehouseID() {
+        return destinationWarehouseID;
+    }
+
+    public void setDestinationWarehouseID(int destinationWarehouseID) {
+        this.destinationWarehouseID = destinationWarehouseID;
+    }
+
+    public Transfers (final int transferID, final int staffID, final int productID, final int quantity,
+                      final int originWarehouseID, final int destinationWarehouseID ) {
         this.transferID = transferID;
         this.staffID = staffID;
         this.productID = productID;
         this.quantity = quantity;
         this.originWarehouseID = originWarehouseID;
+        this.destinationWarehouseID = destinationWarehouseID;
     }
 
     public int getTransferID () {

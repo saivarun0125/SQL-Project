@@ -104,6 +104,13 @@ public class StaffController {
         Utility.printResultSet(set);
     }
 
+    public void printWarehouseOperatorList() throws SQLException {
+        String query = "SELECT * FROM WarehouseOperator;";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        ResultSet set = preparedStatement.executeQuery();
+        Utility.printResultSet(set);
+    }
+
     public void printRegistrationOperatorList() throws SQLException {
         String query = "SELECT * FROM RegistrationOperator;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
