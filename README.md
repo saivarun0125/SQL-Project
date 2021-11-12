@@ -7,5 +7,6 @@ CSC 440 Course Project
  ```scp -r <local_project_directory> <unity_id>@remote.eos.ncsu.edu:.```
 3. SSH into the VCL machine by running: 
    ```ssh -X <unity_id>@remote.eos.ncsu.edu```
-4. From the src folder in the project, compile the project by running ```javac *.java```
-5. Run the project by running ```java WolfCity```
+4. type in "add mysql"
+5. From the src folder in the project, compile the project by running ```javac *.java```
+6. Run the project by running ```java WolfCity```
