@@ -27,6 +27,7 @@ public class WolfCity {
     private static SupplierController supplierController;
     private static MembershipController membershipController;
     private static InventoryController inventoryController;
+    private static TransactionController transactionController;
 
     public static void main(String[] args) {
         try {
@@ -79,6 +80,9 @@ public class WolfCity {
                     System.out.println("24. Delete a membership");
                     System.out.println("25. Add inventory");
                     System.out.println("26. Update inventory");
+                    System.out.println("27. Create a transaction");
+                    System.out.println("28. Edit a transaction");
+                    System.out.println("29. Delete a transaction");
 
                     scan = new Scanner(System.in);
                     int num = scan.nextInt();
@@ -135,6 +139,12 @@ public class WolfCity {
                         addInventory();
                     } else if (num == 26) {
                         updateInventory();
+                    } else if (num == 27) {
+                    	addTransaction();
+                    } else if (num == 28) {
+                    	editTransaction();
+                    } else if (num == 29) {
+                    	deleteTransaction();
                     }
                 }
             } finally {
@@ -145,7 +155,84 @@ public class WolfCity {
         }
     }
 
-    static void addMember() throws SQLException {
+    static void deleteTransaction() throws SQLException {
+    	System.out.println("Here are all of the Transactions in the system");
+        transactionController.printTransactionList();
+        System.out.println("Which transaction would you like to delete?");
+        int transactionID = scan.nextInt();
+        scan.nextLine();
+        transactionController.deleteTransactionInformation(transactionID);
+	}
+
+	static void editTransaction() throws SQLException {
+		System.out.println("Here are a list of all of the transactions in the system");
+		transactionController.printTransactionList();
+		
+		int transactionID = scan.nextInt();
+        String query = "SELECT * FROM Transaction where transactionID = ?";
+        PreparedStatement st = connection.prepareStatement(query);
+        st.setInt(1, transactionID);
+        ResultSet set = st.executeQuery();
+        set.next();
+        System.out.println(set);
+        Transaction t = new Transaction(set.getInt("transactionID"), set.getInt("totalPrice"),
+        		set.getInt("storeID"), set.getInt("memberID"),
+        		set.getInt("staffID"), set.getTimestamp("purchaseDate"));
+        scan.nextLine();
+        System.out.println("Edit this transaction's attributes");
+        System.out.println("Leave attributes blank to not edit them");
+        System.out.println();
+        System.out.println("Enter models.Transaction's total price");
+        int totalPrice = scan.nextInt();
+        t.setTotalPrice(totalPrice);
+        System.out.println("Enter models.Transaction's store ID");
+        int storeID = scan.nextInt();
+        t.setStoreID(storeID);
+        System.out.println("Enter models.Transaction's member ID");
+        int memberID = scan.nextInt();
+        t.setMemberID(memberID);
+        System.out.println("Enter models.Transaction's staff ID");
+        int staffID = scan.nextInt();
+        t.setStaffID(staffID);
+        System.out.println("Enter models.Transaction's purchase date");
+        System.out.print("Year: ");
+        int year = scan.nextInt();
+        scan.nextLine();
+        System.out.print("Month: ");
+        int month = scan.nextInt();
+        scan.nextLine();
+        System.out.print("Day: ");
+        int day =scan.nextInt();
+        scan.nextLine();
+        Timestamp date = Utility.getTimestampObject(year, month - 1, day);
+        System.out.print(date.toString());
+        t.setPurchaseDate(date);
+        transactionController.updateTransactionInformation(t);
+		
+	}
+
+	static void addTransaction() throws SQLException {
+		System.out.println("Enter total price");
+		int totalPrice = scan.nextInt();
+		System.out.println("Enter store ID");
+		int storeID = scan.nextInt();
+		System.out.println("Enter member ID");
+		int memberID = scan.nextInt();
+		System.out.println("Enter staff ID");
+		int staffID = scan.nextInt();
+		System.out.println("Enter the transaction date");
+		System.out.println("Month: ");
+		int month = scan.nextInt();
+		System.out.println("Day: ");
+		int day = scan.nextInt();
+		System.out.println("Year: ");
+		int year = scan.nextInt();
+		Timestamp date = Utility.getTimestampObject(year, month - 1, day);
+		Transaction t = new Transaction(-1, totalPrice, storeID, memberID, staffID, date);
+		transactionController.enterTransactionInformation(t);
+	}
+
+	static void addMember() throws SQLException {
         System.out.println("Enter staff ID");
         int staffID = scan.nextInt();
         scan.nextLine();
@@ -908,6 +995,8 @@ public class WolfCity {
             inventoryController.updateInventoryInformation(inventory);
 
         }
+        
+        
 
 
 
