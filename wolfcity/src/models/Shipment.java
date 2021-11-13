@@ -1,19 +1,24 @@
 package models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Shipment {
 	
 	private int shipmentID;
 	private int staffID;
 	private Type type;
 	private int originWarehouseID;
-	private int destinationWarehouseID;
+	private int destinationStoreID;
+	private List<Integer> products;
 	
-	public Shipment(int shipmentID, int staffID, Type type, int originWarehouseID, int destinationWarehouseID) {
+	public Shipment(int shipmentID, int staffID, Type type, int originWarehouseID, int destinationStoreID, List<Integer> products) {
 		this.shipmentID = shipmentID;
 		this.staffID = staffID;
 		this.type = type;
 		this.originWarehouseID = originWarehouseID;
-		this.destinationWarehouseID = destinationWarehouseID;
+		this.destinationStoreID = destinationStoreID;
+		this.products = products;
 	}
 
 	public int getShipmentID() {
@@ -48,14 +53,19 @@ public class Shipment {
 		this.originWarehouseID = originWarehouseID;
 	}
 
-	public int getDestinationWarehouseID() {
-		return destinationWarehouseID;
+	public int getDestinationStoreID() {
+		return destinationStoreID;
 	}
 
-	public void setDestinationWarehouseID(int destinationWarehouseID) {
-		this.destinationWarehouseID = destinationWarehouseID;
+	public void setDestinationStoreID(int destinationStoreID) {
+		this.destinationStoreID = destinationStoreID;
 	}
-	
-	
 
+	public List<Integer> getProducts() {
+		return products;
+	}
+
+	public void setProducts(List<Integer> products) {
+		this.products = products;
+	}
 }

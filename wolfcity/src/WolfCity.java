@@ -6,18 +6,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
-import controllers.DiscountController;
-import controllers.InventoryController;
-import controllers.MemberController;
-import controllers.MembershipController;
-import controllers.ProductController;
-import controllers.StaffController;
-import controllers.StoreController;
-import controllers.SupplierController;
-import controllers.TransactionController;
-import controllers.WarehouseController;
+import controllers.*;
 import models.*;
 import utlities.Utility;
 
@@ -43,6 +36,7 @@ public class WolfCity {
     private static MembershipController membershipController;
     private static InventoryController inventoryController;
     private static TransactionController transactionController;
+    private static ShipmentController shipmentController;
 
     public static void main ( final String[] args ) {
         try {
@@ -66,6 +60,7 @@ public class WolfCity {
                 memberController = new MemberController( connection );
                 membershipController = new MembershipController( connection );
                 inventoryController = new InventoryController( connection );
+                shipmentController = new ShipmentController( connection );
 
                 while ( true ) {
                     System.out.println( "What operation would you like to perform?" );
@@ -102,6 +97,8 @@ public class WolfCity {
                     System.out.println( "31. Edit a bill" );
                     System.out.println( "32. Delete a bill" );
                     System.out.println( "33. Generate RewardsCheck" );
+                    System.out.println( "34. Make a transfer" );
+                    System.out.println( "35. Create a shipment" );
 
                     scan = new Scanner(System.in);
                     int num = scan.nextInt();
@@ -195,6 +192,9 @@ public class WolfCity {
                     }
                     else if (num == 34) {
                         addTransfer();
+                    }
+                    else if (num == 35) {
+                        addShipment();
                     }
                 }
             }
@@ -1052,7 +1052,7 @@ public class WolfCity {
         }
     }
 
-    static void addTransfer() throws SQLException {
+    static void addTransfer () throws SQLException {
 
         System.out.println("This is the current state of the warehouse inventory");
         inventoryController.printWarehouseInventoryList();
@@ -1089,6 +1089,60 @@ public class WolfCity {
 
         Transfers transfer = new Transfers(-1, staffID, productID, quantity, originWarehouseID, destinationWarehouseID);
         inventoryController.transferProduct(transfer);
+    }
+
+    static void addShipment () throws SQLException {
+
+        System.out.println("Here are all of the warehouse operators");
+        staffController.printWarehouseOperatorList();
+
+        System.out.println("Enter the Warehouse Operator's ID");
+        int staffID = scan.nextInt();
+        scan.nextLine();
+
+
+        System.out.println("Enter the Warehouse Operator's ID");
+        System.out.println("New (n)");
+        System.out.println("Return (r)");
+        String typeString = scan.nextLine();
+        Type type;
+        if (typeString.charAt(0) == 'n') {
+            type = Type.NEW_SHIPMENT;
+        } else {
+            type = Type.RETURN;
+        }
+
+        System.out.println("Here are all of the warehouses in the system");
+        warehouseController.printWarehouseList();
+
+        System.out.println("Enter the Warehouse's ID");
+        int warehouseID = scan.nextInt();
+        scan.nextLine();
+
+        System.out.println("Here are all of the stores in the system");
+        storeController.printStoreList();
+
+        System.out.println("Enter the Store's ID");
+        int storeID = scan.nextInt();
+        scan.nextLine();
+
+        System.out.println("Here are all of the products in the system");
+        productController.printProductList();
+
+        System.out.println("Enter IDs of the products in the shipment");
+        System.out.println("Enter -1 to signal end of products input");
+
+        List<Integer> products = new ArrayList<>();
+
+        int productID = 0;
+        while ((productID = scan.nextInt()) != -1) {
+            scan.nextLine();
+            products.add(productID);
+        }
+
+        Shipment shipment = new Shipment(-1, staffID, type, warehouseID, storeID, products);
+
+        shipmentController.enterShipmentInformation(shipment);
     }
 
     // static void deleteInventory() throws SQLException {
