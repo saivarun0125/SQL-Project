@@ -1,7 +1,9 @@
 package controllers;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import models.Discount;
 import models.Transaction;
@@ -22,7 +24,7 @@ public class TransactionController {
 	}
 
 	public void enterTransactionInformation(Transaction t) throws SQLException {
-		calculateTotalPrice(t);
+		ArrayList<Discount> appliedDiscounts = (ArrayList<Discount>) calculateTotalPrice(t);
 		String query = "INSERT INTO Transaction (totalPrice, storeID, memberID, staffID, purchaseDate) VALUES(?, ?, ?, ?, ?)";
 		PreparedStatement preparedStatement = connection.prepareStatement(query);
 		preparedStatement.setFloat(1, t.getTotalPrice());
@@ -50,6 +52,17 @@ public class TransactionController {
 			preparedStatement.setInt(3, tp.getQuantity());
 			preparedStatement.execute();
 		}
+
+		for (Discount d : appliedDiscounts) {
+			query = "INSERT INTO AppliesTo (discountID, productID, transactionID) VALUES(?, ?, ?)";
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setInt(1, d.getDiscountID());
+			preparedStatement.setInt(2, d.getProductID());
+			preparedStatement.setInt(3, transactionID);
+			preparedStatement.execute();
+		}
+
+
 	}
 
 	public void printTransactionList() throws SQLException {
@@ -84,8 +97,13 @@ public class TransactionController {
 	}
 
 	public void deleteTransactionInformation(int transactionID) throws SQLException {
-		String query = "DELETE FROM TransactionProducts WHERE transactionID = ?;";
+		String query = "DELETE FROM AppliesTo WHERE transactionID = ?;";
 		PreparedStatement preparedStatement = connection.prepareStatement(query);
+		preparedStatement.setInt(1, transactionID);
+		preparedStatement.execute();
+
+		query = "DELETE FROM TransactionProducts WHERE transactionID = ?;";
+		preparedStatement = connection.prepareStatement(query);
 		preparedStatement.setInt(1, transactionID);
 		preparedStatement.execute();
 
@@ -95,8 +113,9 @@ public class TransactionController {
         preparedStatement.execute();
 	}
 
-	public void calculateTotalPrice(Transaction t) throws SQLException {
+	public List<Discount> calculateTotalPrice(Transaction t) throws SQLException {
 		float totalPrice = 0;
+		List<Discount> discounts = new ArrayList<>();
 		for (TransactionProduct tp : t.getProducts()) {
 			float itemPrice = 0;
 			String query = "SELECT *  FROM Product WHERE productID = ?;";
@@ -109,10 +128,12 @@ public class TransactionController {
 			if (discountsMap.get(tp.getProductID()) != null) {
 				Discount discount = discountsMap.get(tp.getProductID());
 				itemPrice *= ((double) (100 - discount.getPercentOff()) / 100);
+				discounts.add(discount);
 			}
 			totalPrice += itemPrice;
 		}
 		t.setTotalPrice(totalPrice);
+		return discounts;
 	}
 
 	public void getAllDiscounts() throws SQLException {

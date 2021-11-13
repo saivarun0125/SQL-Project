@@ -39,26 +39,55 @@ public class StaffController {
         StaffType type = staff.getType();
 
         if (type == StaffType.REGISTRATION_OPERATOR) {
-            query = "INSERT INTO RegistrationOperator (staffID) VALUES (?)";
-            preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, staff.getStaffID());
+            createRegistrationOperator(staffID);
         } else if (type == StaffType.CASHIER) {
-            query = "INSERT INTO Cashier (staffID) VALUES (?)";
-            preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, staff.getStaffID());
+            createCashier(staffID);
         } else if (type == StaffType.ADMIN) {
-            query = "INSERT INTO Admin (staffID) VALUES (?)";
-            preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, staff.getStaffID());
+            createAdmin(staffID);
+            createWarehouseOperator(staffID);
+            createBillingStaff(staffID);
+            createCashier(staffID);
+            createRegistrationOperator(staffID);
         } else if (type == StaffType.WAREHOUSE_OPERATOR) {
-            query = "INSERT INTO WarehouseOperator (staffID) VALUES (?)";
-            preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, staff.getStaffID());
+            createWarehouseOperator(staffID);
         } else if (type == StaffType.BILLING_STAFF) {
-            query = "INSERT INTO BillingStaff (staffID) VALUES (?)";
-            preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, staff.getStaffID());
+            createBillingStaff(staffID);
         }
+
+    }
+
+    public void createBillingStaff(int staffID) throws SQLException {
+        String query = "INSERT INTO BillingStaff (staffID) VALUES (?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, staffID);
+        preparedStatement.execute();
+    }
+
+    public void createWarehouseOperator(int staffID) throws SQLException {
+        String query = "INSERT INTO WarehouseOperator (staffID) VALUES (?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, staffID);
+        preparedStatement.execute();
+    }
+
+    public void createAdmin(int staffID) throws SQLException {
+        String query = "INSERT INTO Admin (staffID) VALUES (?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, staffID);
+        preparedStatement.execute();
+    }
+
+    public void createRegistrationOperator(int staffID) throws SQLException {
+        String query = "INSERT INTO RegistrationOperator (staffID) VALUES (?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, staffID);
+        preparedStatement.execute();
+    }
+
+    public void createCashier(int staffID) throws SQLException {
+        String query = "INSERT INTO Cashier (staffID) VALUES (?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, staffID);
         preparedStatement.execute();
     }
 

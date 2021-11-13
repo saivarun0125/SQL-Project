@@ -11,13 +11,13 @@ import utilities.Utility;
 public class WolfCity {
 
     // Update your user info alone here
-    private static final String         jdbcURL  = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/jjboike"; // Using
+    private static final String         jdbcURL  = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/srmaale"; // Using
                                                                                                         // SERVICE_NAME
 
     // Update your user and password info here!
 
-    private static final String         user     = "jjboike";
-    private static final String         password = "wolfpackjack";
+    private static final String         user     = "srmaale";
+    private static final String         password = "wolfpacksai";
     private static Scanner              scan;
     private static Connection           connection;
     private static MemberController     memberController;
@@ -437,7 +437,7 @@ public class WolfCity {
             default:
                 type = StaffType.CASHIER;
         }
-        ;
+
         final Staff staff = new Staff( set.getInt( "staffID" ), set.getString( "name" ), set.getInt( "age" ),
                 set.getInt( "storeID" ), set.getString( "homeAddress" ), set.getString( "jobTitle" ),
                 set.getString( "phoneNumber" ), set.getString( "email" ), set.getTimestamp( "employmentDate" ), type );
