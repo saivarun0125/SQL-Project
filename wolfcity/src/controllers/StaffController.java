@@ -2,7 +2,7 @@ package controllers;
 
 import models.Staff;
 import models.StaffType;
-import utlities.Utility;
+import utilities.Utility;
 
 import java.sql.*;
 
@@ -106,6 +106,20 @@ public class StaffController {
 
     public void printWarehouseOperatorList() throws SQLException {
         String query = "SELECT * FROM WarehouseOperator;";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        ResultSet set = preparedStatement.executeQuery();
+        Utility.printResultSet(set);
+    }
+
+    public void printBillingStaffList() throws SQLException {
+        String query = "SELECT * FROM BillingStaff;";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        ResultSet set = preparedStatement.executeQuery();
+        Utility.printResultSet(set);
+    }
+
+    public void printCashierList() throws SQLException {
+        String query = "SELECT * FROM Cashier;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         ResultSet set = preparedStatement.executeQuery();
         Utility.printResultSet(set);

@@ -6,8 +6,8 @@ public class StoreInventory extends Inventory {
 
     private int storeID;
 
-    public StoreInventory(int inventoryID, int amount, float price, int productID, Timestamp expirationDate, Timestamp manufacturingDate, int storeID) {
-        super(inventoryID, amount, price, productID, expirationDate, manufacturingDate);
+    public StoreInventory(int inventoryID, int amount, int productID, Timestamp expirationDate, Timestamp manufacturingDate, int storeID) {
+        super(inventoryID, amount, productID, expirationDate, manufacturingDate);
         this.storeID = storeID;
     }
 

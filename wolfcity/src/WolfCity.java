@@ -1,10 +1,4 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +6,7 @@ import java.util.Scanner;
 
 import controllers.*;
 import models.*;
-import utlities.Utility;
+import utilities.Utility;
 
 public class WolfCity {
 
@@ -37,6 +31,7 @@ public class WolfCity {
     private static InventoryController inventoryController;
     private static TransactionController transactionController;
     private static ShipmentController shipmentController;
+    private static BillController billController;
 
     public static void main ( final String[] args ) {
         try {
@@ -61,6 +56,8 @@ public class WolfCity {
                 membershipController = new MembershipController( connection );
                 inventoryController = new InventoryController( connection );
                 shipmentController = new ShipmentController( connection );
+                transactionController = new TransactionController( connection );
+                billController = new BillController(connection);
 
                 while ( true ) {
                     System.out.println( "What operation would you like to perform?" );
@@ -90,9 +87,9 @@ public class WolfCity {
                     System.out.println( "24. Delete a membership" );
                     System.out.println( "25. Add inventory" );
                     System.out.println( "26. Update inventory" );
-                    System.out.println( "24. Add a transaction to the system" );
-                    System.out.println( "25. Edit a transaction" );
-                    System.out.println( "26. Delete a transaction" );
+                    System.out.println( "27. Add a transaction to the system" );
+                    System.out.println( "28. Edit a transaction" );
+                    System.out.println( "29. Delete a transaction" );
                     System.out.println( "30. Add a bill to the system" );
                     System.out.println( "31. Edit a bill" );
                     System.out.println( "32. Delete a bill" );
@@ -190,6 +187,18 @@ public class WolfCity {
                     else if ( num == 29 ) {
                     	deleteTransaction();
                     }
+                    else if ( num == 30 ) {
+                        addBill();
+                    }
+                    else if ( num == 31 ) {
+                        editBill();
+                    }
+                    else if ( num == 32 ) {
+                        deleteBill();
+                    }
+                    else if ( num == 33 ) {
+                        addRewardsCheck();
+                    }
                     else if (num == 34) {
                         addTransfer();
                     }
@@ -226,61 +235,94 @@ public class WolfCity {
         st.setInt(1, transactionID);
         ResultSet set = st.executeQuery();
         set.next();
-        System.out.println(set);
-        Transaction t = new Transaction(set.getInt("transactionID"), set.getInt("totalPrice"),
-        		set.getInt("storeID"), set.getInt("memberID"),
-        		set.getInt("staffID"), set.getTimestamp("purchaseDate"));
+
+        transactionID = set.getInt("transactionID");
+        float totalPrice = set.getFloat("totalPrice");
+        int storeID = set.getInt("storeID");
+        int memberID = set.getInt("memberID");
+        int staffID = set.getInt("staffID");
+        Timestamp purchaseDate = set.getTimestamp("purchaseDate");
+
+        query = "SELECT * FROM TransactionProducts where transactionID = ?";
+        st = connection.prepareStatement(query);
+        st.setInt(1, transactionID);
+        set = st.executeQuery();
+        List<TransactionProduct> products = new ArrayList<>();
+        while (set.next()) {
+            transactionID = set.getInt("transactionID");
+            int productID = set.getInt("productID");
+            int quantity = set.getInt("quantity");
+            TransactionProduct tp = new TransactionProduct(transactionID,productID, quantity);
+            products.add(tp);
+        }
+
+
+        Transaction t = new Transaction(transactionID, totalPrice, storeID, memberID, staffID, purchaseDate, products);
         scan.nextLine();
-        System.out.println("Edit this transaction's attributes");
-        System.out.println("Leave attributes blank to not edit them");
-        System.out.println();
-        System.out.println("Enter models.Transaction's total price");
-        int totalPrice = scan.nextInt();
-        t.setTotalPrice(totalPrice);
-        System.out.println("Enter models.Transaction's store ID");
-        int storeID = scan.nextInt();
-        t.setStoreID(storeID);
-        System.out.println("Enter models.Transaction's member ID");
-        int memberID = scan.nextInt();
-        t.setMemberID(memberID);
-        System.out.println("Enter models.Transaction's staff ID");
-        int staffID = scan.nextInt();
-        t.setStaffID(staffID);
-        System.out.println("Enter models.Transaction's purchase date");
-        System.out.print("Year: ");
-        int year = scan.nextInt();
-        scan.nextLine();
-        System.out.print("Month: ");
-        int month = scan.nextInt();
-        scan.nextLine();
-        System.out.print("Day: ");
-        int day =scan.nextInt();
-        scan.nextLine();
-        Timestamp date = Utility.getTimestampObject(year, month - 1, day);
-        System.out.print(date.toString());
-        t.setPurchaseDate(date);
+        System.out.println("Here are all of the products in the system:");
+        productController.printProductList();
+        System.out.println("Edit the products in this transaction:");
+        while (1 == 1) {
+
+            System.out.println("Enter ID of the quantity you would like to change");
+            int productID = scan.nextInt();
+            scan.nextLine();
+            if (productID == -1) {
+                break;
+            }
+            System.out.println("Enter ID of the quantity you would like to change");
+            int quantity = scan.nextInt();
+            scan.nextLine();
+            if (quantity == -1) {
+                break;
+            }
+
+            for (TransactionProduct tp : t.getProducts()) {
+                if (productID == tp.getProductID()) {
+                    tp.setQuantity(quantity);
+                }
+            }
+        }
+
         transactionController.updateTransactionInformation(t);
 		
 	}
 
 	static void addTransaction() throws SQLException {
-		System.out.println("Enter total price");
-		int totalPrice = scan.nextInt();
+        System.out.println("Here are a list of all of the stores in the system");
+        storeController.printStoreList();
 		System.out.println("Enter store ID");
 		int storeID = scan.nextInt();
+        System.out.println("Here are a list of all of the members in the system");
+        memberController.printMemberList();
 		System.out.println("Enter member ID");
 		int memberID = scan.nextInt();
+        System.out.println("Here are a list of all of the cashiers in the system");
+        staffController.printCashierList();
 		System.out.println("Enter staff ID");
 		int staffID = scan.nextInt();
-		System.out.println("Enter the transaction date");
-		System.out.println("Month: ");
-		int month = scan.nextInt();
-		System.out.println("Day: ");
-		int day = scan.nextInt();
-		System.out.println("Year: ");
-		int year = scan.nextInt();
-		Timestamp date = Utility.getTimestampObject(year, month - 1, day);
-		Transaction t = new Transaction(-1, totalPrice, storeID, memberID, staffID, date);
+
+        List<TransactionProduct> products = new ArrayList<>();
+        System.out.println("Here are a list of all of the products in the system");
+        productController.printProductList();
+        while (1 == 1) {
+            System.out.println("Enter -1 to stop entering products");
+            System.out.println("Enter product ID");
+            int productID = scan.nextInt();
+            if (productID == -1)
+                break;
+            scan.nextLine();
+            System.out.println("Enter -1 to stop entering products");
+            System.out.println("Enter quantity");
+            int quantity = scan.nextInt();
+            if (quantity == -1)
+                break;
+            scan.nextLine();
+            TransactionProduct tp = new TransactionProduct(-1,  productID, quantity);
+            products.add(tp);
+        }
+
+		Transaction t = new Transaction(-1, -1, storeID, memberID, staffID, new Timestamp(System.currentTimeMillis()), products);
 		transactionController.enterTransactionInformation(t);
 	}
 
@@ -511,6 +553,122 @@ public class WolfCity {
         storeController.deleteStoreInformation( storeID );
     }
 
+
+
+
+
+    private static void addBill () throws SQLException {
+        System.out.println( "Here are all of the billing staff in the system" );
+        staffController.printBillingStaffList();
+        System.out.println( "Enter the billing staff's ID" );
+        final int staffID = scan.nextInt();
+        scan.nextLine();
+
+        System.out.println( "Here are all of the suppliers in the system" );
+        supplierController.printSupplierList();
+        System.out.println( "Enter the supplier's ID" );
+        final int supplierID = scan.nextInt();
+        scan.nextLine();
+
+        System.out.println( "Enter the cost of the bill" );
+        final float amount = scan.nextFloat();
+        scan.nextLine();
+
+        System.out.println( "Enter the bill's issue date" );
+        System.out.print( "Year: " );
+        final int year = scan.nextInt();
+        scan.nextLine();
+        System.out.print( "Month: " );
+        final int month = scan.nextInt();
+        scan.nextLine();
+        System.out.print( "Day: " );
+        final int day = scan.nextInt();
+        scan.nextLine();
+        final Timestamp issueDate = Utility.getTimestampObject( year, month - 1, day );
+
+
+        System.out.println( "Enter the bill's due date" );
+        System.out.print( "Year: " );
+        final int yearDue = scan.nextInt();
+        scan.nextLine();
+        System.out.print( "Month: " );
+        final int monthDue = scan.nextInt();
+        scan.nextLine();
+        System.out.print( "Day: " );
+        final int dayDue = scan.nextInt();
+        scan.nextLine();
+        final Timestamp dueDate = Utility.getTimestampObject( yearDue, monthDue - 1, dayDue );
+
+        Bill bill = new Bill(-1, staffID, supplierID, amount, issueDate, dueDate);
+        billController.createBillInformation(bill);
+    }
+
+    static void editBill () throws SQLException {
+        System.out.println( "Here are all of the bills in the system" );
+        billController.printBillList();
+        System.out.println( "Which bill would you like to edit" );
+        final int billID = scan.nextInt();
+        final String query = "SELECT * FROM Bill where billID = ?";
+        final PreparedStatement st = connection.prepareStatement( query );
+        st.setInt( 1, billID );
+        final ResultSet set = st.executeQuery();
+        set.next();
+        System.out.println( set );
+        Bill bill = new Bill( set.getInt( "billID" ), set.getInt( "staffID" ),
+                set.getInt( "supplierID" ), set.getFloat( "amount" ),
+                set.getTimestamp("issueDate"),set.getTimestamp("dueDate") );
+        scan.nextLine();
+        System.out.println( "Edit this bill's amount" );
+        float amount = scan.nextInt();
+        scan.nextLine();
+        bill.setAmount(amount);
+
+        billController.updateBillInformation( bill );
+    }
+
+    static void deleteBill () throws SQLException {
+        System.out.println( "Here are all of the bills in the system" );
+        billController.printBillList();
+        System.out.println( "Which bill would you like to delete?" );
+        final int billID = scan.nextInt();
+        scan.nextLine();
+        billController.deleteBillInformation( billID );
+    }
+
+
+    private static void addRewardsCheck () throws SQLException {
+        System.out.println( "Here are all of the billing staff in the system" );
+        staffController.printBillingStaffList();
+        System.out.println( "Enter the billing staff's ID" );
+        final int staffID = scan.nextInt();
+        scan.nextLine();
+
+        System.out.println( "Here are all of the members in the system" );
+        staffController.printBillingStaffList();
+        System.out.println( "Enter the member's ID" );
+        final int memberID = scan.nextInt();
+        scan.nextLine();
+
+        System.out.println( "Enter the amount on the check" );
+        final float amount = scan.nextFloat();
+        scan.nextLine();
+
+        RewardsCheck check = new RewardsCheck(-1, staffID, memberID, amount);
+        billController.generateRewardsCheck(check);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
     private static void addDiscount () throws SQLException {
         System.out.println( "Here are all of the products in the system" );
         productController.printProductList();
@@ -612,10 +770,16 @@ public class WolfCity {
     private static void addProduct () throws SQLException {
         System.out.println( "Enter the product's name" );
         final String productName = scan.nextLine();
+        System.out.println( "Here are all of the suppliers in the system:" );
+        supplierController.printSupplierList();
         System.out.println( "Enter the supplier's id:" );
         final int supplierID = scan.nextInt();
         scan.nextLine();
-        final Product product = new Product( -1, productName, supplierID );
+
+        System.out.println( "Enter the product's price:" );
+        final float price = scan.nextFloat();
+        scan.nextLine();
+        final Product product = new Product( -1, productName, supplierID, price );
         productController.enterProductInformation( product );
     }
 
@@ -631,7 +795,7 @@ public class WolfCity {
         set.next();
         System.out.println( set );
         final Product product = new Product( set.getInt( "productID" ), set.getString( "productName" ),
-                set.getInt( "supplierID" ) );
+                set.getInt( "supplierID" ), set.getFloat("price") );
         scan.nextLine();
         System.out.println( "Edit this store's attributes" );
         System.out.println( "Leave attributes blank to not edit them" );
@@ -920,9 +1084,6 @@ public class WolfCity {
         System.out.println( "Enter the amount of inventory for the product" );
         final int amount = scan.nextInt();
         scan.nextLine();
-        System.out.println( "Enter the price of the product" );
-        final float price = scan.nextFloat();
-        scan.nextLine();
 
         System.out.println( "Here is a list of all products in the system:" );
         productController.printProductList();
@@ -968,7 +1129,7 @@ public class WolfCity {
             System.out.println( "Enter the storeID for this inventory entry" );
             final int storeID = scan.nextInt();
             scan.nextLine();
-            inventory = new StoreInventory( -1, amount, price, productID, expirationDate, manufacturingDate, storeID );
+            inventory = new StoreInventory( -1, amount, productID, expirationDate, manufacturingDate, storeID );
         }
         else if ( inventoryType.charAt( 0 ) == 'w' ) {
             System.out.println( "Here are all of the warehouses in the system:" );
@@ -976,7 +1137,7 @@ public class WolfCity {
             System.out.println( "Enter the warehouseID for this inventory entry" );
             final int warehouseID = scan.nextInt();
             scan.nextLine();
-            inventory = new WarehouseInventory( -1, amount, price, productID, expirationDate, manufacturingDate,
+            inventory = new WarehouseInventory( -1, amount, productID, expirationDate, manufacturingDate,
                     warehouseID );
         }
         assert inventory != null;
@@ -994,12 +1155,12 @@ public class WolfCity {
         Inventory inventory = null;
         if ( set.next() ) {
             if ( set.getInt( "warehouseID" ) != 0 ) {
-                inventory = new WarehouseInventory( inventoryID, set.getInt( "amount" ), set.getFloat( "price" ),
+                inventory = new WarehouseInventory( inventoryID, set.getInt( "amount" ),
                         set.getInt( "productID" ), set.getTimestamp( "expirationDate" ),
                         set.getTimestamp( "manufacturingDate" ), set.getInt( "warehouseID" ) );
             }
             else if ( set.getInt( "storeID" ) != 0 ) {
-                inventory = new StoreInventory( inventoryID, set.getInt( "amount" ), set.getFloat( "price" ),
+                inventory = new StoreInventory( inventoryID, set.getInt( "amount" ),
                         set.getInt( "productID" ), set.getTimestamp( "expirationDate" ),
                         set.getTimestamp( "manufacturingDate" ), set.getInt( "storeID" ) );
             }
@@ -1009,10 +1170,6 @@ public class WolfCity {
             scan.nextLine();
             assert inventory != null;
             inventory.setAmount( amount );
-            System.out.println( "Enter the price of the product" );
-            final float price = scan.nextFloat();
-            scan.nextLine();
-            inventory.setPrice( price );
 
             System.out.println( "Here is a list of all products in the system:" );
             productController.printProductList();
@@ -1144,6 +1301,20 @@ public class WolfCity {
 
         shipmentController.enterShipmentInformation(shipment);
     }
+
+//    static void addTransaction() {
+//        System.out.println("This is the current state of the warehouse inventory");
+//        inventoryController.printWarehouseInventoryList();
+//
+//
+//        System.out.println("Here are all of the warehouse operators");
+//        staffController.printWarehouseOperatorList();
+//
+//        System.out.println("Enter the Warehouse Operator's ID");
+//        int staffID = scan.nextInt();
+//        scan.nextLine();
+//
+//    }
 
     // static void deleteInventory() throws SQLException {
     // System.out.println("Here are all of the inventory in the system");

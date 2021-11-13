@@ -7,7 +7,7 @@ import java.sql.SQLException;
 
 import models.Bill;
 import models.RewardsCheck;
-import utlities.Utility;
+import utilities.Utility;
 
 public class BillController {
 
@@ -22,18 +22,18 @@ public class BillController {
         final PreparedStatement preparedStatement = connection.prepareStatement( query );
         preparedStatement.setInt( 1, bill.getStaffID() );
         preparedStatement.setInt( 2, bill.getSupplierID() );
-        preparedStatement.setInt( 3, bill.getAmount() );
+        preparedStatement.setFloat( 3, bill.getAmount() );
         preparedStatement.setTimestamp( 4, bill.getIssueDate() );
         preparedStatement.setTimestamp( 5, bill.getDueDate() );
         preparedStatement.execute();
     }
 
     public void updateBillInformation ( final Bill bill ) throws SQLException {
-        final String query = "UPDATE Discount set billID = ?, staffID = ?, supplierID = ?, amount = ?, issueDate = ?, dueDate = ? WHERE billID = ?;";
+        final String query = "UPDATE Bill set staffID = ?, supplierID = ?, amount = ?, issueDate = ?, dueDate = ? WHERE billID = ?;";
         final PreparedStatement preparedStatement = connection.prepareStatement( query );
         preparedStatement.setInt( 1, bill.getStaffID() );
         preparedStatement.setInt( 2, bill.getSupplierID() );
-        preparedStatement.setInt( 3, bill.getAmount() );
+        preparedStatement.setFloat( 3, bill.getAmount() );
         preparedStatement.setTimestamp( 4, bill.getIssueDate() );
         preparedStatement.setTimestamp( 5, bill.getDueDate() );
         preparedStatement.setInt( 6, bill.getBillID() );
@@ -55,9 +55,9 @@ public class BillController {
     }
 
     public void generateRewardsCheck ( final RewardsCheck rewardsCheck ) throws SQLException {
-        final String query = "INSERT INTO RewardsCheck (amount, staffId, memberId ) VALUES (?, ?, ?)";
+        final String query = "INSERT INTO RewardsCheck (amount, staffID, memberID ) VALUES (?, ?, ?)";
         final PreparedStatement preparedStatement = connection.prepareStatement( query );
-        preparedStatement.setInt( 1, rewardsCheck.getAmount() );
+        preparedStatement.setFloat( 1, rewardsCheck.getAmount() );
         preparedStatement.setInt( 2, rewardsCheck.getStaffID() );
         preparedStatement.setInt( 3, rewardsCheck.getMemberID() );
         preparedStatement.execute();

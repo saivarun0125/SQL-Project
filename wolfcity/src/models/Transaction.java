@@ -1,24 +1,27 @@
 package models;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 public class Transaction {
 	
 	private int transactionID;
-	private int totalPrice;
+	private float totalPrice;
 	private int storeID;
 	private int memberID;
 	private int staffID;
 	private Timestamp purchaseDate;
+	private List<TransactionProduct> products;
 	
-	public Transaction(int transactionID, int totalPrice, int storeID, int memberID, int staffID,
-			Timestamp purchaseDate) {
+	public Transaction(int transactionID, float totalPrice, int storeID, int memberID, int staffID,
+			Timestamp purchaseDate, List<TransactionProduct> products) {
 		this.transactionID = transactionID;
 		this.totalPrice = totalPrice;
 		this.storeID = storeID;
 		this.memberID = memberID;
 		this.staffID = staffID;
 		this.purchaseDate = purchaseDate;
+		this.products = products;
 	}
 
 	public int getTransactionID() {
@@ -29,11 +32,11 @@ public class Transaction {
 		this.transactionID = transactionID;
 	}
 
-	public int getTotalPrice() {
+	public float getTotalPrice() {
 		return totalPrice;
 	}
 
-	public void setTotalPrice(int totalPrice) {
+	public void setTotalPrice(float totalPrice) {
 		this.totalPrice = totalPrice;
 	}
 
@@ -69,4 +72,11 @@ public class Transaction {
 		this.purchaseDate = purchaseDate;
 	}
 
+	public List<TransactionProduct> getProducts() {
+		return products;
+	}
+
+	public void setProducts(List<TransactionProduct> products) {
+		this.products = products;
+	}
 }

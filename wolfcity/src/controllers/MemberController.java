@@ -1,7 +1,7 @@
 package controllers;
 
 import models.Member;
-import utlities.Utility;
+import utilities.Utility;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

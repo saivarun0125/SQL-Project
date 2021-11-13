@@ -4,7 +4,7 @@ import models.Inventory;
 import models.StoreInventory;
 import models.Transfers;
 import models.WarehouseInventory;
-import utlities.Utility;
+import utilities.Utility;
 
 import java.sql.*;
 
@@ -26,14 +26,13 @@ public class InventoryController {
 
 
 
-        String query = "INSERT INTO Inventory (amount, price, productID, expirationDate, manufacturingDate) VALUES (?, ?, ?, ?, ?);";
+        String query = "INSERT INTO Inventory (amount, productID, expirationDate, manufacturingDate) VALUES (?, ?, ?, ?, ?);";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setInt(1, inventory.getAmount());
-        preparedStatement.setFloat(2, inventory.getPrice());
 
-        preparedStatement.setInt(3, inventory.getProductID());
-        preparedStatement.setTimestamp(4, inventory.getExpirationDate());
-        preparedStatement.setTimestamp(5, inventory.getManufacturingDate());
+        preparedStatement.setInt(2, inventory.getProductID());
+        preparedStatement.setTimestamp(3, inventory.getExpirationDate());
+        preparedStatement.setTimestamp(4, inventory.getManufacturingDate());
         preparedStatement.executeQuery();
 
         String select = "SELECT LAST_INSERT_ID();";
@@ -63,14 +62,13 @@ public class InventoryController {
     }
 
     public void updateInventoryInformation(Inventory inventory) throws SQLException {
-        String query = "UPDATE Inventory set amount = ?, price = ?, productID = ?, expirationDate = ?, manufacturingDate = ? WHERE inventoryID = ?;";
+        String query = "UPDATE Inventory set amount = ?, productID = ?, expirationDate = ?, manufacturingDate = ? WHERE inventoryID = ?;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setInt(1, inventory.getAmount());
-        preparedStatement.setFloat(2, inventory.getPrice());
-        preparedStatement.setInt(3, inventory.getProductID());
-        preparedStatement.setTimestamp(4, inventory.getExpirationDate());
-        preparedStatement.setTimestamp(5, inventory.getManufacturingDate());
-        preparedStatement.setInt(6, inventory.getInventoryID());
+        preparedStatement.setInt(2, inventory.getProductID());
+        preparedStatement.setTimestamp(3, inventory.getExpirationDate());
+        preparedStatement.setTimestamp(4, inventory.getManufacturingDate());
+        preparedStatement.setInt(5, inventory.getInventoryID());
         preparedStatement.execute();
     }
 

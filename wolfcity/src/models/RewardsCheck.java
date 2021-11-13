@@ -7,11 +7,11 @@ public class RewardsCheck {
 //	amount, staffID, and memberID are not allowed to be null
 	
 	private int checkID;
-	private int amount;
+	private float amount;
 	private int staffID;
 	private int memberID;
 	
-	public RewardsCheck(int checkID, int amount, int staffID, int memberID) {
+	public RewardsCheck(int checkID,  int staffID, int memberID, float amount) {
 		this.checkID = checkID;
 		this.amount = amount;
 		this.staffID = staffID;
@@ -27,11 +27,11 @@ public class RewardsCheck {
 		this.checkID = checkID;
 	}
 
-	public int getAmount() {
+	public float getAmount() {
 		return amount;
 	}
 
-	public void setAmount(int amount) {
+	public void setAmount(float amount) {
 		this.amount = amount;
 	}
 

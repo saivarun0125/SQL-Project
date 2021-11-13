@@ -5,15 +5,13 @@ import java.sql.Timestamp;
 public class Inventory {
     private int inventoryID;
     private int amount;
-    private float price;
     private int productID;
     private Timestamp expirationDate;
     private Timestamp manufacturingDate;
 
-    public Inventory(int inventoryID, int amount, float price, int productID, Timestamp expirationDate, Timestamp manufacturingDate) {
+    public Inventory(int inventoryID, int amount, int productID, Timestamp expirationDate, Timestamp manufacturingDate) {
         this.inventoryID = inventoryID;
         this.amount = amount;
-        this.price = price;
         this.productID = productID;
         this.expirationDate = expirationDate;
         this.manufacturingDate = manufacturingDate;
@@ -35,13 +33,6 @@ public class Inventory {
         this.amount = amount;
     }
 
-    public float getPrice() {
-        return price;
-    }
-
-    public void setPrice(float price) {
-        this.price = price;
-    }
 
     public int getProductID() {
         return productID;

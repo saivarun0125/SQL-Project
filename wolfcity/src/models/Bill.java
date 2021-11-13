@@ -11,11 +11,11 @@ public class Bill {
 	private int billID;
 	private int staffID;
 	private int supplierID;
-	private int amount;
+	private float amount;
 	private Timestamp issueDate;
 	private Timestamp dueDate;
 	
-	public Bill(int billID, int staffID, int supplierID, int amount, Timestamp issueDate, Timestamp dueDate) {
+	public Bill(int billID, int staffID, int supplierID, float amount, Timestamp issueDate, Timestamp dueDate) {
 		this.billID = billID;
 		this.staffID = staffID;
 		this.supplierID = supplierID;
@@ -48,11 +48,11 @@ public class Bill {
 		this.supplierID = supplierID;
 	}
 
-	public int getAmount() {
+	public float getAmount() {
 		return amount;
 	}
 
-	public void setAmount(int amount) {
+	public void setAmount(float amount) {
 		this.amount = amount;
 	}
 

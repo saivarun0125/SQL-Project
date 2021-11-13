@@ -5,8 +5,8 @@ import java.sql.Timestamp;
 public class WarehouseInventory extends Inventory {
     private int warehouseID;
 
-    public WarehouseInventory(int inventoryID, int amount, float price, int productID, Timestamp expirationDate, Timestamp manufacturingDate, int warehouseID) {
-        super(inventoryID, amount, price, productID, expirationDate, manufacturingDate);
+    public WarehouseInventory(int inventoryID, int amount, int productID, Timestamp expirationDate, Timestamp manufacturingDate, int warehouseID) {
+        super(inventoryID, amount, productID, expirationDate, manufacturingDate);
         this.warehouseID = warehouseID;
     }
 

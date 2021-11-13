@@ -1,16 +1,22 @@
 package models;
 
-import java.util.List;
-
-public class ShipmentProducts extends Shipment {
-
+public class TransactionProduct {
+    private int transactionID;
     private int productID;
     private int quantity;
 
-    public ShipmentProducts(int shipmentID, int staffID, Type type, int originWarehouseID, int destinationStoreID, List<Integer> products, int productID, int quantity) {
-        super(shipmentID, staffID, type, originWarehouseID, destinationStoreID, products);
+    public TransactionProduct(int transactionID, int productID, int quantity) {
+        this.transactionID = transactionID;
         this.productID = productID;
         this.quantity = quantity;
+    }
+
+    public int getTransactionID() {
+        return transactionID;
+    }
+
+    public void setTransactionID(int transactionID) {
+        this.transactionID = transactionID;
     }
 
     public int getProductID() {
