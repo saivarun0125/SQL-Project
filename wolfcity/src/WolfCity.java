@@ -33,6 +33,7 @@ public class WolfCity {
     private static TransactionController transactionController;
     private static ShipmentController shipmentController;
     private static BillController billController;
+    private static ReportController reportController;
 
     public static void main ( final String[] args ) {
         try {
@@ -59,6 +60,7 @@ public class WolfCity {
                 shipmentController = new ShipmentController( connection );
                 transactionController = new TransactionController( connection );
                 billController = new BillController(connection);
+                reportController = new ReportController(connection);
 
                 while ( true ) {
                     System.out.println( "What operation would you like to perform?" );
@@ -97,6 +99,9 @@ public class WolfCity {
                     System.out.println( "33. Generate RewardsCheck" );
                     System.out.println( "34. Make a transfer" );
                     System.out.println( "35. Create a shipment" );
+                    System.out.println( "36. Generate a Sales Report" );
+                    System.out.println( "37. Generate a Merchandise Report" );
+                    System.out.println( "38. Generate a Customer Report" );
 
                     scan = new Scanner(System.in);
                     int num = scan.nextInt();
@@ -206,6 +211,15 @@ public class WolfCity {
                     else if (num == 35) {
                         addShipment();
                     }
+                    else if ( num == 36 ) {
+                        getSalesReport();
+                    }
+                    else if (num == 37) {
+                        getMerchandiseReport();
+                    }
+                    else if (num == 38) {
+                        getCustomerReport();
+                    }
                 }
             }
             finally {
@@ -216,6 +230,117 @@ public class WolfCity {
             oops.printStackTrace();
         }
     }
+
+    static void getSalesReport() throws SQLException {
+        System.out.println( "Date Range, Month or Year Report?" );
+        System.out.println( "Date (d)");
+        System.out.println( "Month: (m)" );
+        System.out.println( "Year: (y)" );
+        String choice = scan.next();
+        char choiceChar = choice.charAt(0);
+        if (choiceChar == 'd') {
+            System.out.println( "Enter the start date" );
+            System.out.print( "Year: " );
+            final int year = scan.nextInt();
+            scan.nextLine();
+            System.out.print( "Month: " );
+            final int month = scan.nextInt();
+            scan.nextLine();
+            System.out.print( "Day: " );
+            final int day = scan.nextInt();
+            scan.nextLine();
+            final Timestamp startDate = Utility.getTimestampObject( year, month - 1, day );
+
+            System.out.println( "Enter the end date" );
+            System.out.print( "Year: " );
+            final int yearEnd = scan.nextInt();
+            scan.nextLine();
+            System.out.print( "Month: " );
+            final int monthEnd = scan.nextInt();
+            scan.nextLine();
+            System.out.print( "Day: " );
+            final int dayEnd = scan.nextInt();
+            scan.nextLine();
+            final Timestamp endDate = Utility.getTimestampObject( yearEnd, monthEnd - 1, dayEnd );
+
+            reportController.getSalesReportByDate(startDate, endDate);
+
+        } else if (choiceChar == 'm') {
+            System.out.println("Print the month (1-12)");
+            int month = scan.nextInt();
+            scan.nextLine();
+
+            System.out.println("Print the year");
+            int year = scan.nextInt();
+            scan.nextLine();
+
+            reportController.getSalesReportByMonth(year, month);
+
+        } else if (choiceChar == 'y') {
+            System.out.println("Print the year");
+            int year = scan.nextInt();
+            scan.nextLine();
+
+            reportController.getSalesReportByYear(year);
+        }
+    }
+
+    static void getMerchandiseReport() throws SQLException {
+        System.out.println( "Get report for a product or a store?" );
+        System.out.println( "Product (p)");
+        System.out.println( "Store: (s)" );
+        String choice = scan.next();
+        char choiceChar = choice.charAt(0);
+
+        if (choiceChar == 'p') {
+            System.out.println( "Here are all of the products in the system" );
+            productController.printProductList();
+            int productID = scan.nextInt();
+            scan.nextLine();
+            reportController.getMerchandiseStockReportByProduct(productID);
+        } else if (choiceChar == 's') {
+            System.out.println( "Here are all of the stores in the system" );
+            storeController.printStoreList();
+            System.out.println("Which store should the report be for?");
+            int storeID = scan.nextInt();
+            scan.nextLine();
+            reportController.getMerchandiseStockReportByStore(storeID);
+        }
+    }
+
+    static void getCustomerReport() throws SQLException {
+        System.out.println( "Monthly or Yearly Customer Growth Report, or Total Purchase Amount for Customer Report?" );
+        System.out.println( "Month: (m)" );
+        System.out.println( "Year: (y)" );
+        System.out.println( "Total Purchase Amount for a customer: (t)" );
+        String choice = scan.next();
+        char choiceChar = choice.charAt(0);
+
+        if (choiceChar == 't') {
+            System.out.println( "Here are all of the members in the system:" );
+            memberController.printMemberList();
+            System.out.println( "Which member should the report be for?" );
+            int memberID = scan.nextInt();
+            scan.nextLine();
+            reportController.getCustomerTotalPurchaseAmount(memberID);
+        } else if (choiceChar == 'm') {
+            System.out.println("Print the month (1-12)");
+            int month = scan.nextInt();
+            scan.nextLine();
+            System.out.println("Print the year");
+            int year = scan.nextInt();
+            scan.nextLine();
+            reportController.getCustomerGrowthByMonth(year, month);
+        } else if (choiceChar == 'y') {
+            System.out.println("Print the year");
+            int year = scan.nextInt();
+            scan.nextLine();
+            reportController.getCustomerGrowthByYear(year);
+        }
+    }
+
+
+
 
     /**
      * Delete a transaction
@@ -387,22 +512,22 @@ public class WolfCity {
         System.out.println( "Edit this member's attributes" );
         System.out.println( "Leave attributes blank to not edit them" );
         System.out.println();
-        System.out.println( "Enter models.Member's first name" );
+        System.out.println( "Enter the member's first name" );
         final String firstName = scan.nextLine();
         member.setFirstName( firstName );
-        System.out.println( "Enter models.Member's last name" );
+        System.out.println( "Enter member's last name" );
         final String lastName = scan.nextLine();
         member.setLastName( lastName );
-        System.out.println( "Enter models.Member's email" );
+        System.out.println( "Enter the member's email" );
         final String email = scan.nextLine();
         member.setEmail( email );
-        System.out.println( "Enter models.Member's address" );
+        System.out.println( "Enter the member's address" );
         final String address = scan.nextLine();
         member.setAddress( address );
-        System.out.println( "Enter models.Member's phone number" );
+        System.out.println( "Enter member's phone number" );
         final String phone = scan.nextLine();
         member.setPhoneNumber( phone );
-        System.out.println( "Enter models.Member's active status (y/n)" );
+        System.out.println( "Enter the member's active status (y/n)" );
         final String activeStatus = scan.nextLine();
         final char ch = activeStatus.charAt( 0 );
         if ( ch == 'y' ) {

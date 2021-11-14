@@ -3,11 +3,9 @@ package controllers;
 import models.Member;
 import models.Product;
 import models.Store;
+import utilities.Utility;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 
 public class ReportController {
 
@@ -19,53 +17,63 @@ public class ReportController {
 
 
     public void getSalesReportByDate(Timestamp startDate, Timestamp endDate) throws SQLException {
-        String query = "SELECT * FROM Transaction WHERE purchaseDate BETWEEN ? AND LAST_DAY(?);";
+        String query = "SELECT SUM(totalPrice) FROM Transaction WHERE purchaseDate BETWEEN ? AND LAST_DAY(?);";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setTimestamp(1, startDate);
         preparedStatement.setTimestamp(2, endDate);
-        preparedStatement.execute();
+        ResultSet set = preparedStatement.executeQuery();
+        set.next();
+        System.out.println("Total sales in the date range: $" + set.getFloat("SUM(totalPrice)"));
     }
 
     public void getSalesReportByMonth(int year, int month) throws SQLException {
-        String query = "SELECT * FROM Transaction WHERE YEAR(purchaseDate) = ? AND MONTH(purchaseDate) = ?;";
+        String query = "SELECT SUM(totalPrice) FROM Transaction WHERE YEAR(purchaseDate) = ? AND MONTH(purchaseDate) = ?;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setInt(1, year);
         preparedStatement.setInt(2, month);
-        preparedStatement.execute();
+        ResultSet set = preparedStatement.executeQuery();
+        set.next();
+        System.out.println("Total sales in the month: $" + set.getFloat("SUM(totalPrice)"));
     }
 
     public void getSalesReportByYear(int year) throws SQLException {
-        String query = "SELECT * FROM Transaction WHERE YEAR(purchaseDate) = ?;";
+        String query = "SELECT SUM(totalPrice) FROM Transaction WHERE YEAR(purchaseDate) = ?;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setInt(1, year);
-        preparedStatement.execute();
+        ResultSet set = preparedStatement.executeQuery();
+        set.next();
+        System.out.println("Total sales in the year: $" + set.getFloat("SUM(totalPrice)"));
 
     }
 
-    public void getMerchandiseStockReportByStore(Store store) throws SQLException {
-        String query = "select s.storeID, p.productName, p.productID, i.amount, i.price from Inventory i " +
+    public void getMerchandiseStockReportByStore(int storeID) throws SQLException {
+        String query = "select s.storeID as storeID, p.productName as productName, p.productID as productID, i.amount as amount, p.price as price, p.buyPrice as wholesalePrice from Inventory i " +
                 "join Product p on i.productID = p.productID " +
                 "join StoreInventory s on s.inventoryID = i.inventoryID and storeID = ?;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
-        preparedStatement.setInt(1, store.getStoreID());
-        preparedStatement.execute();
+        preparedStatement.setInt(1, storeID);
+        ResultSet set = preparedStatement.executeQuery();
+        System.out.println("Merchandise Report for Store #" + storeID);
+        Utility.printResultSet(set);
     }
 
-    public void getMerchandiseStockReportByProduct(Product product) throws SQLException {
-        String query = "select s.storeID, p.productName, p.productID, i.amount, i.price from Inventory i " +
+    public void getMerchandiseStockReportByProduct(int productID) throws SQLException {
+        String query = "select s.storeID as storeID, p.productName as productName, p.productID as productID, i.amount as amount, p.price as price, p.buyPrice as wholesalePrice from Inventory i " +
                 "join Product p on i.productID = p.productID " +
                 "join StoreInventory s on s.inventoryID = i.inventoryID and p.productID = ?;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
-        preparedStatement.setInt(1, product.getProductID());
-        preparedStatement.execute();
-
+        preparedStatement.setInt(1, productID);
+        ResultSet set = preparedStatement.executeQuery();
+        System.out.println("Merchandise Report for Product #" + productID);
+        Utility.printResultSet(set);
     }
 
     public void getCustomerGrowthByYear(int year) throws SQLException {
         String query = "SELECT COUNT(*) FROM Membership WHERE YEAR(startDate) = ?;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setInt(1, year);
-        preparedStatement.execute();
+        ResultSet set = preparedStatement.executeQuery();
+        Utility.printResultSet(set);
     }
 
     public void getCustomerGrowthByMonth(int year, int month) throws SQLException {
@@ -74,14 +82,16 @@ public class ReportController {
         preparedStatement.setInt(1, month);
         preparedStatement.setInt(2, year);
 
-        preparedStatement.execute();
+        ResultSet set = preparedStatement.executeQuery();
+        Utility.printResultSet(set);
     }
 
-    public void getCustomerTotalPurchaseAmount(Member member) throws SQLException {
+    public void getCustomerTotalPurchaseAmount(int memberID) throws SQLException {
         String query = "SELECT SUM(totalPrice) FROM Transaction WHERE memberID = ?;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
-        preparedStatement.setInt(1, member.getMemberID());
-        preparedStatement.execute();
+        preparedStatement.setInt(1, memberID);
+        ResultSet set = preparedStatement.executeQuery();
+        Utility.printResultSet(set);
     }
 
 }

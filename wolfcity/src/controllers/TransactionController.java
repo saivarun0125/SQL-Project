@@ -55,8 +55,8 @@ public class TransactionController {
 			query = "UPDATE Inventory i INNER JOIN StoreInventory si ON si.inventoryID = i.inventoryID AND si.storeID = ? SET i.amount = i.amount - ? WHERE i.productID = ?; ";
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setInt(1, t.getStoreID());
-			preparedStatement.setInt(1, tp.getQuantity());
-			preparedStatement.setInt(1, tp.getProductID());
+			preparedStatement.setInt(2, tp.getQuantity());
+			preparedStatement.setInt(3, tp.getProductID());
 			preparedStatement.execute();
 
 		}
