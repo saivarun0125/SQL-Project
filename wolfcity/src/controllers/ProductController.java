@@ -17,7 +17,7 @@ public class ProductController {
     }
 
     public void enterProductInformation(Product product) throws SQLException {
-        String query = "INSERT INTO Product (productName, supplierID, price, buyPrice) VALUES(?, ?,?)";
+        String query = "INSERT INTO Product (productName, supplierID, price, buyPrice) VALUES(?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setString(1, product.getProductName());
         preparedStatement.setInt(2, product.getSupplierID());
@@ -27,7 +27,7 @@ public class ProductController {
     }
 
     public void updateProductInformation(Product product) throws SQLException {
-        String query = "UPDATE Product set productName = ?, supplierID = ?, price = ? WHERE productID = ?;";
+        String query = "UPDATE Product set productName = ?, supplierID = ?, price = ?, buyPrice = ? WHERE productID = ?;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setString(1, product.getProductName());
         preparedStatement.setInt(2, product.getSupplierID());
