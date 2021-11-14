@@ -8,7 +8,11 @@ import utilities.Utility;
 
 import java.sql.*;
 
+/**
+ * Class controls all inventory operations including adding, updating inventory. Also handles warehouse transfers
+ */
 public class InventoryController {
+    /** Database connection */
     private static Connection connection;
 
     /**
@@ -26,10 +30,20 @@ public class InventoryController {
             "INNER JOIN Product p  ON i.productID = p.productID " +
             "INNER JOIN  WarehouseInventory wi ON i.inventoryID = wi.inventoryID;";
 
+    /**
+     * Constructs an InventoryController object
+     * @param connection connection
+     * @throws SQLException e
+     */
     public InventoryController(Connection connection) throws SQLException {
         InventoryController.connection = connection;
     }
 
+    /**
+     * Create a new inventory entry
+     * @param inventory inventory
+     * @throws SQLException e
+     */
     public void enterInventoryInformation(Inventory inventory) throws SQLException {
         String query = "INSERT INTO Inventory (amount, productID, expirationDate, manufacturingDate) VALUES (?, ?, ?, ?);";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -68,6 +82,11 @@ public class InventoryController {
 
     }
 
+    /**
+     * Update an inventory entry
+     * @param inventory inventory
+     * @throws SQLException e
+     */
     public void updateInventoryInformation(Inventory inventory) throws SQLException {
         String query = "UPDATE Inventory set amount = ?, productID = ?, expirationDate = ?, manufacturingDate = ? WHERE inventoryID = ?;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -79,6 +98,11 @@ public class InventoryController {
         preparedStatement.execute();
     }
 
+    /**
+     * Delete an inventory entry
+     * @param inventoryID inventory ID
+     * @throws SQLException e
+     */
     public void deleteInventoryInformation(int inventoryID) throws SQLException {
         String query = "SELECT * FROM WarehouseInventory where inventoryID = ?";
         PreparedStatement st = connection.prepareStatement(query);
@@ -106,7 +130,11 @@ public class InventoryController {
         preparedStatement.execute();
     }
 
-    // Transfer inventory between two warehouses
+    /**
+     * Transfer a specified amount of a product between two warehouses
+     * @param transfer transfer
+     * @throws SQLException e
+     */
     public void transferProduct(Transfers transfer) throws SQLException {
         String query = "UPDATE Inventory i INNER JOIN WarehouseInventory wi ON (wi.inventoryID = i.inventoryID and wi.warehouseID = ? and i.productID = ?) SET i.amount = i.amount - ?;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -138,31 +166,20 @@ public class InventoryController {
 
     }
 
-
-
-//
-//    public void createShipment(Transfers transfer) throws SQLException {
-//        String query = "INSERT INTO Transfers (staffID, productID, quantity, originWarehouseID, destinationWarehouseID) VALUES (?, ?, ?, ?, ?);";
-//        PreparedStatement preparedStatement = connection.prepareStatement(query);
-//        preparedStatement.setInt(1, transfer.getStaffID());
-//        preparedStatement.setInt(2, transfer.getProductID());
-//
-//        preparedStatement.setInt(3, transfer.getQuantity());
-//        preparedStatement.setInt(4, transfer.getOriginWarehouseID());
-//        preparedStatement.setInt(5, transfer.getDestinationWarehouseID());
-//        preparedStatement.executeQuery();
-//
-//        String select = "SELECT LAST_INSERT_ID();";
-//    }
-
-    // Print all warehouse inventory
+    /**
+     * Print a list of warehouse inventory
+     * @throws SQLException e
+     */
     public void printWarehouseInventoryList() throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement(SELECT_WAREHOUSE_INVENTORY);
         ResultSet set = preparedStatement.executeQuery();
         Utility.printResultSet(set);
     }
 
-    // Print all inventory
+    /**
+     * Print all inventory in the system
+     * @throws SQLException e
+     */
     public void printInventoryList() throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL);
         ResultSet set = preparedStatement.executeQuery();

@@ -10,16 +10,27 @@ import models.RewardsCheck;
 import utilities.Utility;
 
 /**
- * Control all of the billing operations
+ * Controls all the billing operations including adding, updating, and deleting.
+ * Also generates rewards checks.
  */
 public class BillController {
-
+    /** Database connection */
     private static Connection connection;
 
+    /**
+     * Constructs a BillController object
+     * @param connection connection
+     * @throws SQLException e
+     */
     public BillController ( final Connection connection ) throws SQLException {
         BillController.connection = connection;
     }
 
+    /**
+     * Create a new bill in the system
+     * @param bill bill
+     * @throws SQLException e
+     */
     public void createBillInformation ( final Bill bill ) throws SQLException {
         final String query = "INSERT INTO Bill (staffID, supplierID, amount, issueDate, dueDate ) VALUES(?, ?, ?, ?, ?)";
         final PreparedStatement preparedStatement = connection.prepareStatement( query );
@@ -31,6 +42,11 @@ public class BillController {
         preparedStatement.execute();
     }
 
+    /**
+     * Update an existing bill
+     * @param bill bill
+     * @throws SQLException e
+     */
     public void updateBillInformation ( final Bill bill ) throws SQLException {
         final String query = "UPDATE Bill set staffID = ?, supplierID = ?, amount = ?, issueDate = ?, dueDate = ? WHERE billID = ?;";
         final PreparedStatement preparedStatement = connection.prepareStatement( query );
@@ -43,6 +59,11 @@ public class BillController {
         preparedStatement.execute();
     }
 
+    /**
+     * Delete a bill's information
+     * @param billID bill id
+     * @throws SQLException e
+     */
     public void deleteBillInformation ( final int billID ) throws SQLException {
         final String query = "DELETE FROM Bill WHERE billID = ?;";
         final PreparedStatement preparedStatement = connection.prepareStatement( query );
@@ -50,6 +71,10 @@ public class BillController {
         preparedStatement.execute();
     }
 
+    /**
+     * Print the list of bills in the system
+     * @throws SQLException e
+     */
     public void printBillList () throws SQLException {
         final String query = "SELECT * FROM Bill;";
         final PreparedStatement preparedStatement = connection.prepareStatement( query );
@@ -57,6 +82,11 @@ public class BillController {
         Utility.printResultSet( set );
     }
 
+    /**
+     * Generate a rewards check
+     * @param rewardsCheck check
+     * @throws SQLException e
+     */
     public void generateRewardsCheck ( final RewardsCheck rewardsCheck ) throws SQLException {
         final String query = "INSERT INTO RewardsCheck (amount, staffID, memberID ) VALUES (?, ?, ?)";
         final PreparedStatement preparedStatement = connection.prepareStatement( query );

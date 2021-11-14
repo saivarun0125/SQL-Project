@@ -9,13 +9,26 @@ import java.sql.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Controls creating shipments in the system
+ */
 public class ShipmentController {
+    /** Database connection */
     private static Connection connection;
 
+    /**
+     * Constructs a ShipmentController object
+     * @param connection connection
+     */
     public ShipmentController(Connection connection) {
         ShipmentController.connection = connection;
     }
 
+    /**
+     * Create a new shipment
+     * @param shipment shipment
+     * @throws SQLException e
+     */
     public void enterShipmentInformation(Shipment shipment) throws SQLException {
         String query = "INSERT INTO Shipment (staffID, type, originWarehouseID, destinationStoreID) VALUES (?, ?, ?, ?);";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -35,8 +48,10 @@ public class ShipmentController {
         shipment.setShipmentID(shipmentID);
 
 
+        // Check if the shipment type is new or a return
         if (shipment.getType() == Type.NEW_SHIPMENT) {
-
+            // Shipment is a return
+            // Subtract inventory from warehouse and add it to the store
             for (Map.Entry<Integer, Integer> product : shipment.getProducts().entrySet()) {
                 query = "UPDATE Inventory i INNER JOIN WarehouseInventory wi ON (wi.inventoryID = i.inventoryID and wi.warehouseID = ? and i.productID = ?) SET i.amount = i.amount - ?;";
                 preparedStatement = connection.prepareStatement(query);
@@ -55,8 +70,9 @@ public class ShipmentController {
                 preparedStatement.executeQuery();
                 System.out.println(preparedStatement);
             }
-
         } else {
+            // Shipment is a return
+            // Subtract inventory from the store and add to the warehouse
             for (Map.Entry<Integer, Integer> product : shipment.getProducts().entrySet()) {
                 query = "UPDATE Inventory i INNER JOIN WarehouseInventory wi ON (wi.inventoryID = i.inventoryID and wi.warehouseID = ? and i.productID = ?) SET i.amount = i.amount + ?;";
                 preparedStatement = connection.prepareStatement(query);
@@ -79,6 +95,7 @@ public class ShipmentController {
         }
 
 
+        // Add the products in the shipment to the ShipmentProducts table
         for (Map.Entry<Integer, Integer> product: shipment.getProducts().entrySet()) {
             query = "INSERT INTO ShipmentProducts (shipmentID, productID, quantity) VALUES (?, ?, ?);";
             preparedStatement = connection.prepareStatement(query);
@@ -90,7 +107,10 @@ public class ShipmentController {
     }
 
 
-
+    /**
+     * Print all of the shipments in the system
+     * @throws SQLException e
+     */
     public void printShipmentList() throws SQLException {
         String query = "SELECT * FROM Shipment;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);

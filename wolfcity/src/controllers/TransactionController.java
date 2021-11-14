@@ -12,10 +12,19 @@ import utilities.Utility;
 
 public class TransactionController {
 
+	/** Database connection */
 	private static Connection connection;
+	/** Controls discount operations */
 	private static DiscountController discountController;
+	/** Map of discounts. The key is the productID and the value is a Discount object */
 	private static HashMap<Integer, Discount> discountsMap;
 
+	/**
+	 * Constructs a TransactionController object from a database connection
+	 * Instantiates the dictionary of active discounts
+	 * @param connection connection
+	 * @throws SQLException e
+	 */
 	public TransactionController(Connection connection) throws SQLException {
 		TransactionController.connection = connection;
 		TransactionController.discountController = new DiscountController(connection);
@@ -23,6 +32,11 @@ public class TransactionController {
 		getAllDiscounts();
 	}
 
+	/**
+	 * Create a transaction in the system
+	 * @param t transaction
+	 * @throws SQLException e
+	 */
 	public void enterTransactionInformation(Transaction t) throws SQLException {
 		ArrayList<Discount> appliedDiscounts = (ArrayList<Discount>) calculateTotalPrice(t);
 		String query = "INSERT INTO Transaction (totalPrice, storeID, memberID, staffID, purchaseDate) VALUES(?, ?, ?, ?, ?)";
@@ -42,6 +56,7 @@ public class TransactionController {
 			transactionID = set.getInt("LAST_INSERT_ID()");
 		}
 		t.setTransactionID(transactionID);
+
 
 		for (TransactionProduct tp : t.getProducts()) {
 			tp.setTransactionID(transactionID);
@@ -70,9 +85,14 @@ public class TransactionController {
 			preparedStatement.execute();
 		}
 
-
+		preparedStatement.close();
+		set.close();
 	}
 
+	/**
+	 * Print a list of transactions
+	 * @throws SQLException e
+	 */
 	public void printTransactionList() throws SQLException {
 		String query = "SELECT * FROM Transaction;";
 		PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -81,6 +101,11 @@ public class TransactionController {
 
 	}
 
+	/**
+	 * Update a transaction with new product quantities
+	 * @param t transaction
+	 * @throws SQLException e
+	 */
 	public void updateTransactionInformation(Transaction t) throws SQLException {
 		calculateTotalPrice(t);
 		String query = "UPDATE Transaction set totalPrice = ?, storeID = ?, memberID = ?, staffID = ?, purchaseDate = ? WHERE transactionID = ?;";
@@ -102,8 +127,14 @@ public class TransactionController {
 			preparedStatement.setInt(3, tp.getProductID());
 			preparedStatement.execute();
 		}
+		preparedStatement.close();
 	}
 
+	/**
+	 * Delete a transaction from the system
+	 * @param transactionID transaction id
+	 * @throws SQLException e
+	 */
 	public void deleteTransactionInformation(int transactionID) throws SQLException {
 		String query = "DELETE FROM AppliesTo WHERE transactionID = ?;";
 		PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -119,8 +150,16 @@ public class TransactionController {
 		preparedStatement = connection.prepareStatement(query);
         preparedStatement.setInt(1, transactionID);
         preparedStatement.execute();
+
+		preparedStatement.close();
 	}
 
+	/**
+	 * Calculate the total price for a given transaction
+	 * @param t transaction
+	 * @return The list of discounts that are applied to the transaction
+	 * @throws SQLException e
+	 */
 	public List<Discount> calculateTotalPrice(Transaction t) throws SQLException {
 		float totalPrice = 0;
 		List<Discount> discounts = new ArrayList<>();
@@ -133,21 +172,33 @@ public class TransactionController {
 			if (set.next()) {
 				itemPrice = tp.getQuantity() * set.getFloat("price");
 			}
+			// Check if a discount for a given product is active
 			if (discountsMap.get(tp.getProductID()) != null) {
+				// Apply the discount to the transaction
 				Discount discount = discountsMap.get(tp.getProductID());
 				itemPrice *= ((double) (100 - discount.getPercentOff()) / 100);
+				// Add the current discount to the list of discounts added to the current transaction
 				discounts.add(discount);
 			}
+			// Add the item's cost to the total cost
 			totalPrice += itemPrice;
+			preparedStatement.close();
+			set.close();
 		}
+		// Set the total price of the transaction
 		t.setTotalPrice(totalPrice);
 		return discounts;
 	}
 
+	/**
+	 * Get all of the discounts in the system that are active
+	 * @throws SQLException e
+	 */
 	public void getAllDiscounts() throws SQLException {
 		String query = "SELECT * FROM Discount;";
 		PreparedStatement preparedStatement = connection.prepareStatement(query);
 		ResultSet set = preparedStatement.executeQuery();
+		// Iterate through all of the discounts in the sytem
 		while (set.next()) {
 			int discountID = set.getInt("discountID");
 			int productID = set.getInt("productID");
@@ -157,10 +208,14 @@ public class TransactionController {
 
 			Discount discount = new Discount(discountID, productID, percentOff, startDate, endDate);
 			Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+			// Check if the discount is active by looking at start and end date
 			if (startDate.before(currentTime) && endDate.after(currentTime)) {
+				// Add the discount to the map of discounts
 				discountsMap.put(productID, discount);
 			}
 		}
+		preparedStatement.close();
+		set.close();
 
 	}
 

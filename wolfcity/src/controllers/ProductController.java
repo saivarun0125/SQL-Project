@@ -8,14 +8,27 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Handles adding, modifying, and deleting products in the system
+ */
 public class ProductController {
-
+    /** Database connection */
     private static Connection connection;
 
+    /**
+     * Creates a ProductController object
+     * @param connection connection
+     * @throws SQLException e
+     */
     public ProductController(Connection connection) throws SQLException {
         ProductController.connection = connection;
     }
 
+    /**
+     * Creates a new product in the system
+     * @param product product
+     * @throws SQLException e
+     */
     public void enterProductInformation(Product product) throws SQLException {
         String query = "INSERT INTO Product (productName, supplierID, price, buyPrice) VALUES(?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -26,6 +39,11 @@ public class ProductController {
         preparedStatement.execute();
     }
 
+    /**
+     * Update a product's information in the system
+     * @param product product
+     * @throws SQLException e
+     */
     public void updateProductInformation(Product product) throws SQLException {
         String query = "UPDATE Product set productName = ?, supplierID = ?, price = ?, buyPrice = ? WHERE productID = ?;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -37,6 +55,11 @@ public class ProductController {
         preparedStatement.execute();
     }
 
+    /**
+     * Delete a product's entry in the system
+     * @param productID product id
+     * @throws SQLException e
+     */
     public void deleteProductInformation(int productID) throws SQLException {
         String query = "DELETE FROM StoreInventory WHERE inventoryID IN (SELECT inventoryID FROM Inventory WHERE productID = ?);";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -86,6 +109,10 @@ public class ProductController {
         preparedStatement.execute();
     }
 
+    /**
+     * Print the list of products in the system
+     * @throws SQLException e
+     */
     public void printProductList() throws SQLException {
         String query = "SELECT * FROM Product;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);

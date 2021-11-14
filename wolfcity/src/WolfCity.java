@@ -9,6 +9,12 @@ import controllers.*;
 import models.*;
 import utilities.Utility;
 
+/**
+ * This is the main class of the program.
+ * Its purpose is to prompt the user for input to complete the required operations
+ * When prompted for input that requires the referencing of an existing key from another relation
+ * a list of the elements in said relation will be printed so the user has a choice.
+ */
 public class WolfCity {
 
     // Update your user info alone here
@@ -19,8 +25,11 @@ public class WolfCity {
 
     private static final String         user     = "srmaale";
     private static final String         password = "wolfpacksai";
+    /** Scanner for user input */
     private static Scanner              scan;
+    /** Connection to the MariaDB Database */
     private static Connection           connection;
+    /** Static instance of classes for SQL operations */
     private static MemberController     memberController;
     private static StaffController      staffController;
     private static StoreController      storeController;
@@ -106,6 +115,7 @@ public class WolfCity {
                     scan = new Scanner(System.in);
                     int num = scan.nextInt();
                     scan.nextLine();
+                    // Choices for the user input
                     if ( num == 1 ) {
                         addMember();
                     }
@@ -231,6 +241,10 @@ public class WolfCity {
         }
     }
 
+    /**
+     * Gets a sales report for a given date range, month or year
+     * @throws SQLException e
+     */
     static void getSalesReport() throws SQLException {
         System.out.println( "Date Range, Month or Year Report?" );
         System.out.println( "Date (d)");
@@ -285,6 +299,10 @@ public class WolfCity {
         }
     }
 
+    /**
+     * Gets a merchandise report for a given product or store
+     * @throws SQLException e
+     */
     static void getMerchandiseReport() throws SQLException {
         System.out.println( "Get report for a product or a store?" );
         System.out.println( "Product (p)");
@@ -308,6 +326,10 @@ public class WolfCity {
         }
     }
 
+    /**
+     * Gets a customer report for monthly or yearly growth, or gets a total purchase amount for a given customer
+     * @throws SQLException e
+     */
     static void getCustomerReport() throws SQLException {
         System.out.println( "Monthly or Yearly Customer Growth Report, or Total Purchase Amount for Customer Report?" );
         System.out.println( "Month: (m)" );
@@ -1561,7 +1583,7 @@ public class WolfCity {
         System.out.println("Enter IDs of the products in the shipment");
         System.out.println("Enter -1 to signal end of products input");
 
-        // Product ID -> quantity
+        // Hashmap containing the productID and quantity of each of the items in the shipment
         HashMap<Integer, Integer> products = new HashMap<>();
 
         int productID = 0;
@@ -1570,6 +1592,7 @@ public class WolfCity {
             System.out.println("Enter the quantity of the product");
             int quantity = scan.nextInt();
             scan.nextLine();
+            // Adds the product and its amount into the hashmap
             products.put(productID, quantity);
             System.out.println("Enter the productID");
         }
@@ -1580,6 +1603,10 @@ public class WolfCity {
     }
 
 
+    /**
+     * Closes a connection with MariaDB
+     * @param connection connection to SQL database
+     */
     static void close ( final Connection connection ) {
         if ( connection != null ) {
             try {
@@ -1590,23 +1617,4 @@ public class WolfCity {
         }
     }
 
-    static void close ( final Statement statement ) {
-        if ( statement != null ) {
-            try {
-                statement.close();
-            }
-            catch ( final Throwable whatever ) {
-            }
-        }
-    }
-
-    static void close ( final ResultSet result ) {
-        if ( result != null ) {
-            try {
-                result.close();
-            }
-            catch ( final Throwable whatever ) {
-            }
-        }
-    }
 }
