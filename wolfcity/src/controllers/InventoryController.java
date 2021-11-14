@@ -26,7 +26,7 @@ public class InventoryController {
 
 
 
-        String query = "INSERT INTO Inventory (amount, productID, expirationDate, manufacturingDate) VALUES (?, ?, ?, ?, ?);";
+        String query = "INSERT INTO Inventory (amount, productID, expirationDate, manufacturingDate) VALUES (?, ?, ?, ?);";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setInt(1, inventory.getAmount());
 

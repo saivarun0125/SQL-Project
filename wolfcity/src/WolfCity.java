@@ -958,7 +958,7 @@ public class WolfCity {
         final int statusInt = scan.nextInt();
         scan.nextLine();
 
-        System.out.println( "Enter the discount's start date" );
+        System.out.println( "Enter the membership's start date" );
         System.out.print( "Year: " );
         final int year = scan.nextInt();
         scan.nextLine();
@@ -970,7 +970,7 @@ public class WolfCity {
         scan.nextLine();
         final Timestamp startDate = Utility.getTimestampObject( year, month - 1, day );
 
-        System.out.println( "Enter the discount's end date" );
+        System.out.println( "Enter the membership's end date" );
         System.out.print( "Year: " );
         final int yearEnd = scan.nextInt();
         scan.nextLine();
