@@ -1,6 +1,7 @@
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
@@ -215,7 +216,11 @@ public class WolfCity {
             oops.printStackTrace();
         }
     }
-    
+
+    /**
+     * Delete a transaction
+     * @throws SQLException e
+     */
     static void deleteTransaction() throws SQLException {
     	System.out.println("Here are all of the Transactions in the system");
         transactionController.printTransactionList();
@@ -225,6 +230,10 @@ public class WolfCity {
         transactionController.deleteTransactionInformation(transactionID);
 	}
 
+    /**
+     * Edit a transaction
+     * @throws SQLException e
+     */
 	static void editTransaction() throws SQLException {
 		System.out.println("Here are a list of all of the transactions in the system");
 		transactionController.printTransactionList();
@@ -288,6 +297,10 @@ public class WolfCity {
 		
 	}
 
+    /**
+     * Add a transaction to the system
+     * @throws SQLException e
+     */
 	static void addTransaction() throws SQLException {
         System.out.println("Here are a list of all of the stores in the system");
         storeController.printStoreList();
@@ -326,8 +339,14 @@ public class WolfCity {
 		transactionController.enterTransactionInformation(t);
 	}
 
+    /**
+     * Add member
+     * @throws SQLException e
+     */
     static void addMember () throws SQLException {
-        System.out.println( "Enter staff ID" );
+        System.out.println( "Here are all of the registration operators in the system" );
+        staffController.printRegistrationOperatorList();
+        System.out.println( "Enter the registration operator's staffID" );
         final int staffID = scan.nextInt();
         scan.nextLine();
         System.out.println( "Enter the member's first name" );
@@ -344,6 +363,10 @@ public class WolfCity {
         memberController.enterMemberInformation( member );
     }
 
+    /**
+     * Edit a member
+     * @throws SQLException e
+     */
     static void editMember () throws SQLException {
         System.out.println( "Here are all of the Members in the system" );
 
@@ -391,6 +414,10 @@ public class WolfCity {
         memberController.updateMemberInformation( member );
     }
 
+    /**
+     * Delete a member
+     * @throws SQLException e
+     */
     static void deleteMember () throws SQLException {
         System.out.println( "Here are all of the Members in the system" );
         memberController.printMemberList();
@@ -400,8 +427,12 @@ public class WolfCity {
         memberController.deleteMemberInformation( memberID );
     }
 
+    /**
+     * Delete a staff member from the system
+     * @throws SQLException e
+     */
     static void deleteStaff () throws SQLException {
-        System.out.println( "Here are all of the models.Staff members in the system" );
+        System.out.println( "Here are all of the staff members in the system" );
         staffController.printStaffList();
         System.out.println( "Which member would you like to delete?" );
         final int staffID = scan.nextInt();
@@ -409,13 +440,16 @@ public class WolfCity {
         staffController.deleteStaffInformation( staffID );
     }
 
+    /**
+     * Edit staff
+     * @throws SQLException e
+     */
     static void editStaff () throws SQLException {
-        System.out.println( "Here are all of the models.Staff members in the system" );
-
+        System.out.println( "Here are all of the staff members in the system" );
         staffController.printStaffList();
         System.out.println( "Which staff member would you like to edit" );
-
         final int staffID = scan.nextInt();
+        scan.nextLine();
         final String query = "SELECT * FROM Staff where staffID = ?";
         final PreparedStatement st = connection.prepareStatement( query );
         st.setInt( 1, staffID );
@@ -440,7 +474,7 @@ public class WolfCity {
         final Staff staff = new Staff( set.getInt( "staffID" ), set.getString( "name" ), set.getInt( "age" ),
                 set.getInt( "storeID" ), set.getString( "homeAddress" ), set.getString( "jobTitle" ),
                 set.getString( "phoneNumber" ), set.getString( "email" ), set.getTimestamp( "employmentDate" ), type );
-        scan.nextLine();
+
         System.out.println( "Edit this member's attributes" );
         System.out.println( "Leave attributes blank to not edit them" );
         System.out.println();
@@ -467,12 +501,20 @@ public class WolfCity {
         staffController.updateStaffInformation( staff );
     }
 
+    /**
+     * Add staff of all kinds to the system
+     * @throws SQLException e
+     */
     private static void addStaff () throws SQLException {
         System.out.println( "Enter the staff member's name" );
         final String name = scan.nextLine();
         System.out.println( "Enter the staff member's age" );
         final int age = scan.nextInt();
         scan.nextLine();
+
+        System.out.println( "Here are all of the stores in the system" );
+        storeController.printStoreList();
+
         System.out.println( "Enter the storeID attached to the staff member" );
         final int storeID = scan.nextInt();
         scan.nextLine();
@@ -505,6 +547,10 @@ public class WolfCity {
         staffController.enterStaffInformation( staff );
     }
 
+    /**
+     * Add a store from the system
+     * @throws SQLException e
+     */
     private static void addStore () throws SQLException {
         System.out.println( "Enter the store's address" );
         final String address = scan.nextLine();
@@ -519,6 +565,10 @@ public class WolfCity {
         storeController.enterStoreInformation( store );
     }
 
+    /**
+     * Edit a store
+     * @throws SQLException e
+     */
     static void editStore () throws SQLException {
         System.out.println( "Here are all of the stores in the system" );
         storeController.printStoreList();
@@ -551,6 +601,10 @@ public class WolfCity {
         storeController.updateStoreInformation( store );
     }
 
+    /**
+     * Delete a store from the system
+     * @throws SQLException e
+     */
     static void deleteStore () throws SQLException {
         System.out.println( "Here are all of the stores in the system" );
         storeController.printStoreList();
@@ -561,9 +615,10 @@ public class WolfCity {
     }
 
 
-
-
-
+    /**
+     * Add a bill
+     * @throws SQLException e
+     */
     private static void addBill () throws SQLException {
         System.out.println( "Here are all of the billing staff in the system" );
         staffController.printBillingStaffList();
@@ -610,6 +665,10 @@ public class WolfCity {
         billController.createBillInformation(bill);
     }
 
+    /**
+     * Edit a bill
+     * @throws SQLException e
+     */
     static void editBill () throws SQLException {
         System.out.println( "Here are all of the bills in the system" );
         billController.printBillList();
@@ -633,6 +692,10 @@ public class WolfCity {
         billController.updateBillInformation( bill );
     }
 
+    /**
+     * Delete a bill
+     * @throws SQLException e
+     */
     static void deleteBill () throws SQLException {
         System.out.println( "Here are all of the bills in the system" );
         billController.printBillList();
@@ -643,6 +706,10 @@ public class WolfCity {
     }
 
 
+    /**
+     * Create a rewards check
+     * @throws SQLException e
+     */
     private static void addRewardsCheck () throws SQLException {
         System.out.println( "Here are all of the billing staff in the system" );
         staffController.printBillingStaffList();
@@ -665,17 +732,10 @@ public class WolfCity {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
+    /**
+     * Add a discount
+     * @throws SQLException e
+     */
     private static void addDiscount () throws SQLException {
         System.out.println( "Here are all of the products in the system" );
         productController.printProductList();
@@ -714,6 +774,10 @@ public class WolfCity {
         discountController.enterDiscountInformation( discount );
     }
 
+    /**
+     * Edit a discount from the system
+     * @throws SQLException e
+     */
     static void editDiscount () throws SQLException {
         System.out.println( "Here are all of the discounts in the system" );
         discountController.printDiscountList();
@@ -765,6 +829,10 @@ public class WolfCity {
         discountController.updateDiscountInformation( discount );
     }
 
+    /**
+     * Delete a discount from the system
+     * @throws SQLException e
+     */
     static void deleteDiscount () throws SQLException {
         System.out.println( "Here are all of the discounts in the system" );
         discountController.printDiscountList();
@@ -774,6 +842,10 @@ public class WolfCity {
         discountController.deleteDiscountInformation( discountID );
     }
 
+    /**
+     * Add a product to the system
+     * @throws SQLException e
+     */
     private static void addProduct () throws SQLException {
         System.out.println( "Enter the product's name" );
         final String productName = scan.nextLine();
@@ -794,6 +866,10 @@ public class WolfCity {
         productController.enterProductInformation( product );
     }
 
+    /**
+     * Edit a product from the system
+     * @throws SQLException e
+     */
     static void editProduct () throws SQLException {
         System.out.println( "Here are all of the products in the system" );
         productController.printProductList();
@@ -825,6 +901,10 @@ public class WolfCity {
         productController.updateProductInformation( product );
     }
 
+    /**
+     * Delete a product from the system
+     * @throws SQLException e
+     */
     static void deleteProduct () throws SQLException {
         System.out.println( "Here are all of the products in the system" );
         productController.printProductList();
@@ -834,6 +914,10 @@ public class WolfCity {
         productController.deleteProductInformation( productID );
     }
 
+    /**
+     * Add a warehouse to the system
+     * @throws SQLException e
+     */
     private static void addWarehouse () throws SQLException {
         System.out.println( "Enter the warehouse's address" );
         final String address = scan.nextLine();
@@ -841,6 +925,10 @@ public class WolfCity {
         warehouseController.enterWarehouseInformation( warehouse );
     }
 
+    /**
+     * Edit a warehouse
+     * @throws SQLException e
+     */
     static void editWarehouse () throws SQLException {
         System.out.println( "Here are all of the warehouses in the system" );
         warehouseController.printWarehouseList();
@@ -863,6 +951,10 @@ public class WolfCity {
         warehouseController.updateWarehouseInformation( warehouse );
     }
 
+    /**
+     * Delete a warehouse from the system
+     * @throws SQLException e
+     */
     static void deleteWarehouse () throws SQLException {
         System.out.println( "Here are all of the warehouses in the system" );
         warehouseController.printWarehouseList();
@@ -872,6 +964,10 @@ public class WolfCity {
         warehouseController.deleteWarehouseInformation( warehouseID );
     }
 
+    /**
+     * Add a supplier to the system
+     * @throws SQLException e
+     */
     private static void addSupplier () throws SQLException {
         System.out.println( "Enter the supplier's email" );
         final String email = scan.nextLine();
@@ -887,6 +983,10 @@ public class WolfCity {
         supplierController.enterSupplierInformation( supplier );
     }
 
+    /**
+     * Edit a supplier
+     * @throws SQLException e
+     */
     static void editSupplier () throws SQLException {
         System.out.println( "Here are all of the suppliers in the system" );
         supplierController.printSupplierList();
@@ -919,6 +1019,10 @@ public class WolfCity {
         supplierController.updateSupplierInformation( supplier );
     }
 
+    /**
+     * Delete a supplier from the system
+     * @throws SQLException e
+     */
     static void deleteSupplier () throws SQLException {
         System.out.println( "Here are all of the suppliers in the system" );
         supplierController.printSupplierList();
@@ -928,6 +1032,10 @@ public class WolfCity {
         supplierController.deleteSupplierInformation( supplierID );
     }
 
+    /**
+     * Add a membership for a user
+     * @throws SQLException e
+     */
     private static void addMembership () throws SQLException {
 
         System.out.println( "Here are all of the registration operators" );
@@ -992,6 +1100,10 @@ public class WolfCity {
         membershipController.enterMembershipInformation( membership );
     }
 
+    /**
+     * Edit a membership
+     * @throws SQLException e
+     */
     static void editMembership () throws SQLException {
         System.out.println( "Here are all of the memberships in the system" );
         membershipController.printMembershipList();
@@ -1086,6 +1198,10 @@ public class WolfCity {
         membershipController.updateMembershipInformation( membership );
     }
 
+    /**
+     * Delete a membership
+     * @throws SQLException e
+     */
     static void deleteMembership () throws SQLException {
         System.out.println( "Here are all of the memberships in the system" );
         membershipController.printMembershipList();
@@ -1095,6 +1211,10 @@ public class WolfCity {
         membershipController.deleteMembershipInformation( membershipID );
     }
 
+    /**
+     * Add inventory at a store or warehouse
+     * @throws SQLException e
+     */
     private static void addInventory () throws SQLException {
         System.out.println( "Enter the amount of inventory for the product" );
         final int amount = scan.nextInt();
@@ -1159,6 +1279,10 @@ public class WolfCity {
         inventoryController.enterInventoryInformation( inventory );
     }
 
+    /**
+     * Update inventory at a store or warehouse
+     * @throws SQLException e
+     */
     static void updateInventory () throws SQLException {
         System.out.println( "Here is all of the inventory in the system" );
         inventoryController.printInventoryList();
@@ -1224,6 +1348,10 @@ public class WolfCity {
         }
     }
 
+    /**
+     * Add a transfer
+     * @throws SQLException e
+     */
     static void addTransfer () throws SQLException {
 
         System.out.println("This is the current state of the warehouse inventory");
@@ -1263,6 +1391,10 @@ public class WolfCity {
         inventoryController.transferProduct(transfer);
     }
 
+    /**
+     * Add a shipment
+     * @throws SQLException e
+     */
     static void addShipment () throws SQLException {
 
         System.out.println("Here are all of the warehouse operators");
@@ -1304,12 +1436,17 @@ public class WolfCity {
         System.out.println("Enter IDs of the products in the shipment");
         System.out.println("Enter -1 to signal end of products input");
 
-        List<Integer> products = new ArrayList<>();
+        // Product ID -> quantity
+        HashMap<Integer, Integer> products = new HashMap<>();
 
         int productID = 0;
         while ((productID = scan.nextInt()) != -1) {
             scan.nextLine();
-            products.add(productID);
+            System.out.println("Enter the quantity of the product");
+            int quantity = scan.nextInt();
+            scan.nextLine();
+            products.put(productID, quantity);
+            System.out.println("Enter the productID");
         }
 
         Shipment shipment = new Shipment(-1, staffID, type, warehouseID, storeID, products);
@@ -1317,28 +1454,6 @@ public class WolfCity {
         shipmentController.enterShipmentInformation(shipment);
     }
 
-//    static void addTransaction() {
-//        System.out.println("This is the current state of the warehouse inventory");
-//        inventoryController.printWarehouseInventoryList();
-//
-//
-//        System.out.println("Here are all of the warehouse operators");
-//        staffController.printWarehouseOperatorList();
-//
-//        System.out.println("Enter the Warehouse Operator's ID");
-//        int staffID = scan.nextInt();
-//        scan.nextLine();
-//
-//    }
-
-    // static void deleteInventory() throws SQLException {
-    // System.out.println("Here are all of the inventory in the system");
-    // inventoryController.printInventoryList();
-    // System.out.println("Which inventory would you like to delete?");
-    // int inventoryID = scan.nextInt();
-    // scan.nextLine();
-    // supplierController.deleteSupplierInformation(inventoryID);
-    // }
 
     static void close ( final Connection connection ) {
         if ( connection != null ) {

@@ -11,11 +11,9 @@ import java.sql.SQLException;
 public class MembershipController {
 
     private static Connection connection;
-    private static ProductController productController;
 
     public MembershipController(Connection connection) throws SQLException {
         MembershipController.connection = connection;
-        productController = new ProductController(connection);
     }
 
     public void enterMembershipInformation(Membership membership) throws SQLException {

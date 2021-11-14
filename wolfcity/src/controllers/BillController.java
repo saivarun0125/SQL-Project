@@ -9,6 +9,9 @@ import models.Bill;
 import models.RewardsCheck;
 import utilities.Utility;
 
+/**
+ * Control all of the billing operations
+ */
 public class BillController {
 
     private static Connection connection;

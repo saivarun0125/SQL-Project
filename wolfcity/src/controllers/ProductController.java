@@ -69,8 +69,6 @@ public class ProductController {
         preparedStatement.setInt(1, productID);
         preparedStatement.execute();
 
-
-
         query = "DELETE FROM AppliesTo WHERE productID = ?;";
         preparedStatement = connection.prepareStatement(query);
         preparedStatement.setInt(1, productID);

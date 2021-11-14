@@ -1,6 +1,7 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Shipment {
@@ -10,9 +11,9 @@ public class Shipment {
 	private Type type;
 	private int originWarehouseID;
 	private int destinationStoreID;
-	private List<Integer> products;
+	private HashMap<Integer, Integer> products;
 	
-	public Shipment(int shipmentID, int staffID, Type type, int originWarehouseID, int destinationStoreID, List<Integer> products) {
+	public Shipment(int shipmentID, int staffID, Type type, int originWarehouseID, int destinationStoreID, HashMap<Integer, Integer> products) {
 		this.shipmentID = shipmentID;
 		this.staffID = staffID;
 		this.type = type;
@@ -61,11 +62,11 @@ public class Shipment {
 		this.destinationStoreID = destinationStoreID;
 	}
 
-	public List<Integer> getProducts() {
+	public HashMap<Integer, Integer> getProducts() {
 		return products;
 	}
 
-	public void setProducts(List<Integer> products) {
+	public void setProducts(HashMap<Integer, Integer> products) {
 		this.products = products;
 	}
 }
