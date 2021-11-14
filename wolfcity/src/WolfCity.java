@@ -423,19 +423,18 @@ public class WolfCity {
         set.next();
         System.out.println( set );
         StaffType type = null;
-        switch ( set.getString( "jobTitle" ) ) {
-            case "Admin":
-                type = StaffType.ADMIN;
-            case "RegistrationOperator":
-                type = StaffType.REGISTRATION_OPERATOR;
-            case "WarehouseOperator":
-                type = StaffType.WAREHOUSE_OPERATOR;
-            case "Cashier":
-                type = StaffType.CASHIER;
-            case "BillingStaff":
-                type = StaffType.BILLING_STAFF;
-            default:
-                type = StaffType.CASHIER;
+        String jobTitle = set.getString("jobTitle");
+
+        if (jobTitle.equals("Admin")) {
+            type = StaffType.ADMIN;
+        } else if (jobTitle.equals("RegistrationOperator")) {
+            type = StaffType.REGISTRATION_OPERATOR;
+        } else if (jobTitle.equals("WarehouseOperator")) {
+            type = StaffType.WAREHOUSE_OPERATOR;
+        } else if (jobTitle.equals("BillingStaff")) {
+            type = StaffType.BILLING_STAFF;
+        } else if (jobTitle.equals("Cashier")) {
+            type = StaffType.CASHIER;
         }
 
         final Staff staff = new Staff( set.getInt( "staffID" ), set.getString( "name" ), set.getInt( "age" ),
@@ -488,21 +487,18 @@ public class WolfCity {
         final String email = scan.nextLine();
 
         StaffType type = null;
-        switch ( jobTitle ) {
-            case "Admin":
-                type = StaffType.ADMIN;
-            case "RegistrationOperator":
-                type = StaffType.REGISTRATION_OPERATOR;
-            case "WarehouseOperator":
-                type = StaffType.WAREHOUSE_OPERATOR;
-            case "Cashier":
-                type = StaffType.CASHIER;
-            case "BillingStaff":
-                type = StaffType.BILLING_STAFF;
-            default:
-                type = StaffType.CASHIER;
+
+        if (jobTitle.equals("Admin")) {
+            type = StaffType.ADMIN;
+        } else if (jobTitle.equals("RegistrationOperator")) {
+            type = StaffType.REGISTRATION_OPERATOR;
+        } else if (jobTitle.equals("WarehouseOperator")) {
+            type = StaffType.WAREHOUSE_OPERATOR;
+        } else if (jobTitle.equals("BillingStaff")) {
+            type = StaffType.BILLING_STAFF;
+        } else if (jobTitle.equals("Cashier")) {
+            type = StaffType.CASHIER;
         }
-        ;
 
         final Staff staff = new Staff( -1, name, age, storeID, address, jobTitle, phone, email,
                 java.sql.Timestamp.valueOf( LocalDateTime.now() ), type );
