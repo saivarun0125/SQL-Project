@@ -17,11 +17,12 @@ public class ProductController {
     }
 
     public void enterProductInformation(Product product) throws SQLException {
-        String query = "INSERT INTO Product (productName, supplierID, price) VALUES(?, ?,?)";
+        String query = "INSERT INTO Product (productName, supplierID, price, buyPrice) VALUES(?, ?,?)";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setString(1, product.getProductName());
         preparedStatement.setInt(2, product.getSupplierID());
         preparedStatement.setFloat(3, product.getPrice());
+        preparedStatement.setFloat(4, product.getBuyPrice());
         preparedStatement.execute();
     }
 
@@ -31,7 +32,8 @@ public class ProductController {
         preparedStatement.setString(1, product.getProductName());
         preparedStatement.setInt(2, product.getSupplierID());
         preparedStatement.setFloat(3, product.getPrice());
-        preparedStatement.setInt(4, product.getProductID());
+        preparedStatement.setFloat(4, product.getBuyPrice());
+        preparedStatement.setInt(5, product.getProductID());
         preparedStatement.execute();
     }
 

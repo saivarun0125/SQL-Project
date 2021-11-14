@@ -5,12 +5,22 @@ public class Product {
     private String productName;
     private int supplierID;
     private float price;
+    private float buyPrice;
 
-    public Product(int productID, String productName, int supplierID, float price) {
+    public Product(int productID, String productName, int supplierID, float price, float buyPrice) {
         this.productID = productID;
         this.productName = productName;
         this.supplierID = supplierID;
         this.price = price;
+        this.buyPrice = buyPrice;
+    }
+
+    public float getBuyPrice() {
+        return buyPrice;
+    }
+
+    public void setBuyPrice(float buyPrice) {
+        this.buyPrice = buyPrice;
     }
 
     public int getProductID() {

@@ -8,10 +8,13 @@ public class Store {
 
     private int storeID;
 
-    public Store(int storeID, String phone, String address) {
+    private int staffID;
+
+    public Store(int storeID, String phone, String address, int staffID) {
         this.storeID = storeID;
         this.phone = phone;
         this.address = address;
+        this.staffID = Math.max(staffID, 0);
     }
 
     public String getPhone() {
@@ -40,5 +43,13 @@ public class Store {
 
     public void setStoreID(int storeID) {
         this.storeID = storeID;
+    }
+
+    public int getStaffID() {
+        return staffID;
+    }
+
+    public void setStaffID(int staffID) {
+        this.staffID = staffID;
     }
 }

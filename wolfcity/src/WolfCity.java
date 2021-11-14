@@ -514,7 +514,12 @@ public class WolfCity {
         final String address = scan.nextLine();
         System.out.println( "Enter the store's phone number" );
         final String phone = scan.nextLine();
-        final Store store = new Store( -1, phone, address );
+
+        System.out.println("Enter the store's manager (-1 for none)");
+        int managerID = scan.nextInt();
+        scan.nextLine();
+
+        final Store store = new Store( -1, phone, address, managerID );
         storeController.enterStoreInformation( store );
     }
 
@@ -529,8 +534,10 @@ public class WolfCity {
         final ResultSet set = st.executeQuery();
         set.next();
         System.out.println( set );
+
+
         final Store store = new Store( set.getInt( "storeID" ), set.getString( "phoneNumber" ),
-                set.getString( "address" ) );
+                set.getString( "address" ), set.getInt("staffID") );
         scan.nextLine();
         System.out.println( "Edit this store's attributes" );
         System.out.println( "Leave attributes blank to not edit them" );
@@ -541,6 +548,10 @@ public class WolfCity {
         System.out.println( "Enter the store's phone number" );
         final String phone = scan.nextLine();
         store.setPhone( phone );
+        System.out.println( "Enter the store's manager" );
+        final int staffID = scan.nextInt();
+        scan.nextLine();
+        store.setStaffID( staffID );
         storeController.updateStoreInformation( store );
     }
 
@@ -776,10 +787,14 @@ public class WolfCity {
         final int supplierID = scan.nextInt();
         scan.nextLine();
 
-        System.out.println( "Enter the product's price:" );
+        System.out.println( "Enter the product's store price:" );
         final float price = scan.nextFloat();
         scan.nextLine();
-        final Product product = new Product( -1, productName, supplierID, price );
+
+        System.out.println( "Enter the product's wholesale price:" );
+        final float buyPrice = scan.nextFloat();
+        scan.nextLine();
+        final Product product = new Product( -1, productName, supplierID, price, buyPrice );
         productController.enterProductInformation( product );
     }
 
@@ -795,7 +810,7 @@ public class WolfCity {
         set.next();
         System.out.println( set );
         final Product product = new Product( set.getInt( "productID" ), set.getString( "productName" ),
-                set.getInt( "supplierID" ), set.getFloat("price") );
+                set.getInt( "supplierID" ), set.getFloat("price") , set.getFloat("buyPrice"));
         scan.nextLine();
         System.out.println( "Edit this store's attributes" );
         System.out.println( "Leave attributes blank to not edit them" );
@@ -803,9 +818,13 @@ public class WolfCity {
         System.out.println( "Enter the product's name" );
         final String productName = scan.nextLine();
         product.setProductName( productName );
-        System.out.println( "Enter the supplier's id:" );
-        final int supplierID = scan.nextInt();
-        product.setSupplierID( supplierID );
+        System.out.println( "Enter the product's store price:" );
+        final float price = scan.nextInt();
+        product.setPrice( price );
+        scan.nextLine();
+        System.out.println( "Enter the product's wholesale price:" );
+        final float buyPrice = scan.nextInt();
+        product.setBuyPrice( buyPrice );
         scan.nextLine();
         productController.updateProductInformation( product );
     }

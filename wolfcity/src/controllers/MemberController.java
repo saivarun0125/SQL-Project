@@ -19,7 +19,12 @@ public class MemberController {
     public void enterMemberInformation(Member member) throws SQLException {
         String query = "INSERT INTO Member (staffID, firstName, lastName, activeStatus, email, address, phoneNumber) VALUES(?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
-        preparedStatement.setInt(1, member.getStaffID());
+        if (member.getStaffID() <= 0) {
+            preparedStatement.setNull(1,java.sql.Types.INTEGER);
+        } else {
+            preparedStatement.setInt(1, member.getStaffID());
+        }
+
         preparedStatement.setString(2, member.getFirstName());
         preparedStatement.setString(3, member.getLastName());
         preparedStatement.setString(4, member.getActiveStatus());

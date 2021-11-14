@@ -17,19 +17,29 @@ public class StoreController {
     }
 
     public void enterStoreInformation(Store store) throws SQLException {
-        String query = "INSERT INTO Store (phoneNumber, address) VALUES(?, ?)";
+        String query = "INSERT INTO Store (phoneNumber, address, staffID) VALUES(?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setString(1, store.getPhone());
         preparedStatement.setString(2, store.getAddress());
+        if (store.getStaffID() <= 0) {
+            preparedStatement.setNull(3,java.sql.Types.INTEGER);
+        } else {
+            preparedStatement.setInt(3, store.getStaffID());
+        }
         preparedStatement.execute();
     }
 
     public void updateStoreInformation(Store store) throws SQLException {
-        String query = "UPDATE Store set phoneNumber = ?, address = ? WHERE storeID = ?;";
+        String query = "UPDATE Store set phoneNumber = ?, address = ?, staffID = ? WHERE storeID = ?;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setString(1, store.getPhone());
         preparedStatement.setString(2, store.getAddress());
-        preparedStatement.setInt(3, store.getStoreID());
+        if (store.getStaffID() <= 0) {
+            preparedStatement.setNull(3,java.sql.Types.INTEGER);
+        } else {
+            preparedStatement.setInt(3, store.getStaffID());
+        }
+        preparedStatement.setInt(4, store.getStoreID());
         preparedStatement.execute();
     }
 
