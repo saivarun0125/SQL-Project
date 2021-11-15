@@ -111,6 +111,7 @@ public class WolfCity {
                     System.out.println( "36. Generate a Sales Report" );
                     System.out.println( "37. Generate a Merchandise Report" );
                     System.out.println( "38. Generate a Customer Report" );
+                    System.out.println( "39. Exit the program" );
 
                     scan = new Scanner(System.in);
                     int num = scan.nextInt();
@@ -229,6 +230,9 @@ public class WolfCity {
                     }
                     else if (num == 38) {
                         getCustomerReport();
+                    }
+                    else if (num == 39) {
+                        break;
                     }
                 }
             }
