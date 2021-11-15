@@ -108,7 +108,7 @@ public class TransactionController {
 	 */
 	public void updateTransactionInformation(Transaction t) throws SQLException {
 		calculateTotalPrice(t);
-		String query = "UPDATE Transaction set totalPrice = ?, storeID = ?, memberID = ?, staffID = ?, purchaseDate = ? WHERE transactionID = ?;";
+		String query = "UPDATE Transaction set totalPrice = %d, storeID = %d, memberID = %d, staffID = %d, purchaseDate = '%s' WHERE transactionID = %d;";
 		PreparedStatement preparedStatement = connection.prepareStatement(query);
 		preparedStatement.setFloat(1, t.getTotalPrice());
 		preparedStatement.setInt(2, t.getStoreID());
@@ -116,16 +116,30 @@ public class TransactionController {
 		preparedStatement.setInt(4, t.getStaffID());
 		preparedStatement.setTimestamp(5, t.getPurchaseDate());
 		preparedStatement.setInt(6, t.getTransactionID());
-		preparedStatement.execute();
+		
+		
+		//attempt to update the transaction information
+		if(!preparedStatement.execute()) {
+			//rollback if it failed
+			System.out.println("Couldn't edit Transaction with ID " + t.getTransactionID());
+			connection.rollback();
+		}
 
 
+		//editing products in a transaction
 		for (TransactionProduct tp : t.getProducts()) {
 			query = "UPDATE TransactionProducts set quantity = ? WHERE transactionID = ? and productID = ?;";
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setFloat(1, tp.getQuantity());
 			preparedStatement.setInt(2, tp.getTransactionID());
 			preparedStatement.setInt(3, tp.getProductID());
-			preparedStatement.execute();
+			
+			//attempt to update a single product
+			if(!preparedStatement.execute()) {
+				//rollback if it failed
+				System.out.println("Couldn't edit product in Transaction " + tp.getProductID());
+				connection.rollback();
+			}
 		}
 		preparedStatement.close();
 	}

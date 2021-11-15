@@ -41,32 +41,32 @@ public class StaffController {
 //        preparedStatement.setTimestamp(8, staff.getEmploymentDate());
 //         preparedStatement.executeQuery();
 //
-//        String select = "SELECT LAST_INSERT_ID();";
-//        Statement statement = connection.createStatement();
-//        ResultSet set = statement.executeQuery(select);
-//        int staffID = -1;
-//        if (set.next()) {
-//            staffID = set.getInt("LAST_INSERT_ID()");
-//        }
-//        staff.setStaffID(staffID);
-//        System.out.println(staffID);
-//        StaffType type = staff.getType();
-//
-//        if (type == StaffType.REGISTRATION_OPERATOR) {
-//            createRegistrationOperator(staffID);
-//        } else if (type == StaffType.CASHIER) {
-//            createCashier(staffID);
-//        } else if (type == StaffType.ADMIN) {
-//            createAdmin(staffID);
-//            createWarehouseOperator(staffID);
-//            createBillingStaff(staffID);
-//            createCashier(staffID);
-//            createRegistrationOperator(staffID);
-//        } else if (type == StaffType.WAREHOUSE_OPERATOR) {
-//            createWarehouseOperator(staffID);
-//        } else if (type == StaffType.BILLING_STAFF) {
-//            createBillingStaff(staffID);
-//        }
+        String select = "SELECT LAST_INSERT_ID();";
+        Statement statement = connection.createStatement();
+        ResultSet set = statement.executeQuery(select);
+        int staffID = -1;
+        if (set.next()) {
+            staffID = set.getInt("LAST_INSERT_ID()");
+        }
+        staff.setStaffID(staffID);
+        System.out.println(staffID);
+        StaffType type = staff.getType();
+        
+        if (type == StaffType.REGISTRATION_OPERATOR) {
+            createRegistrationOperator(staffID);
+        } else if (type == StaffType.CASHIER) {
+            createCashier(staffID);
+        } else if (type == StaffType.ADMIN) {
+            createAdmin(staffID);
+            createWarehouseOperator(staffID);
+            createBillingStaff(staffID);
+            createCashier(staffID);
+            createRegistrationOperator(staffID);
+        } else if (type == StaffType.WAREHOUSE_OPERATOR) {
+            createWarehouseOperator(staffID);
+        } else if (type == StaffType.BILLING_STAFF) {
+            createBillingStaff(staffID);
+        }
     
     	
     	connection.beginRequest(); //start the Transaction

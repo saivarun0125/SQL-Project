@@ -45,10 +45,13 @@ public class InventoryController {
      * @throws SQLException e
      */
     public void enterInventoryInformation(Inventory inventory) throws SQLException {
+    	
+    	//prepare query
         String query = "INSERT INTO Inventory (amount, productID, expirationDate, manufacturingDate) VALUES (?, ?, ?, ?);";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
+        
+        //getting inventory information
         preparedStatement.setInt(1, inventory.getAmount());
-
         preparedStatement.setInt(2, inventory.getProductID());
         preparedStatement.setTimestamp(3, inventory.getExpirationDate());
         preparedStatement.setTimestamp(4, inventory.getManufacturingDate());
@@ -68,16 +71,34 @@ public class InventoryController {
         if (inventory instanceof StoreInventory) {
             query = "INSERT INTO StoreInventory (inventoryID, storeID) VALUES (?, ?)";
             preparedStatement = connection.prepareStatement(query);
+            
+            //get store inventory info
             preparedStatement.setInt(1, inventory.getInventoryID());
             preparedStatement.setInt(2, ((StoreInventory) inventory).getStoreID());
-            preparedStatement.execute();
+            
+            //attempt to insert StoreInventory
+            if(!preparedStatement.execute()) {
+            	//rollback if it failed
+            	System.out.println("Could not add the Store Inventory");
+            	connection.rollback();
+            }
 
         } else if (inventory instanceof WarehouseInventory) {
             query = "INSERT INTO WarehouseInventory (inventoryID, warehouseID) VALUES (?, ?)";
             preparedStatement = connection.prepareStatement(query);
+            
+            //get warehouse inventory info
             preparedStatement.setInt(1, inventory.getInventoryID());
             preparedStatement.setInt(2, ((WarehouseInventory) inventory).getWarehouseID());
-            preparedStatement.execute();
+            
+            //attempt to insert WarehouseInventory
+            if(!preparedStatement.execute()) {
+            	//rollback if it failed
+            	System.out.println("Could not add the Warehouse Inventory");
+            	connection.rollback();
+            }
+            
+            preparedStatement.close();
         }
 
     }

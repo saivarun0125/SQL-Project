@@ -447,7 +447,7 @@ public class WolfCity {
         System.out.println("Edit the products in this transaction:");
         while (1 == 1) {
 
-            System.out.println("Enter ID of the quantity you would like to change");
+            System.out.println("Enter ID of the product you would like to change");
             int productID = scan.nextInt();
             scan.nextLine();
             if (productID == -1) {
