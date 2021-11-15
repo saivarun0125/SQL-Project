@@ -61,8 +61,14 @@ public class DiscountController {
      * @throws SQLException e
      */
     public void deleteDiscountInformation(int discountID) throws SQLException {
-        String query = "DELETE FROM Discount WHERE discountID = ?;";
+
+        String query = "DELETE FROM AppliesTo WHERE discountID = ?;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, discountID);
+        preparedStatement.execute();
+
+        query = "DELETE FROM Discount WHERE discountID = ?;";
+        preparedStatement = connection.prepareStatement(query);
         preparedStatement.setInt(1, discountID);
         preparedStatement.execute();
     }

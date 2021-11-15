@@ -344,7 +344,34 @@ public class WolfCity {
             System.out.println( "Which member should the report be for?" );
             int memberID = scan.nextInt();
             scan.nextLine();
-            reportController.getCustomerTotalPurchaseAmount(memberID);
+
+            System.out.println( "Enter the start date" );
+            System.out.print( "Year: " );
+            final int year = scan.nextInt();
+            scan.nextLine();
+            System.out.print( "Month: " );
+            final int month = scan.nextInt();
+            scan.nextLine();
+            System.out.print( "Day: " );
+            final int day = scan.nextInt();
+            scan.nextLine();
+            final Timestamp startDate = Utility.getTimestampObject( year, month - 1, day );
+
+            System.out.println( "Enter the end date" );
+            System.out.print( "Year: " );
+            final int yearEnd = scan.nextInt();
+            scan.nextLine();
+            System.out.print( "Month: " );
+            final int monthEnd = scan.nextInt();
+            scan.nextLine();
+            System.out.print( "Day: " );
+            final int dayEnd = scan.nextInt();
+            scan.nextLine();
+            final Timestamp endDate = Utility.getTimestampObject( yearEnd, monthEnd - 1, dayEnd );
+
+
+
+            reportController.getCustomerTotalPurchaseAmount(memberID, startDate, endDate);
         } else if (choiceChar == 'm') {
             System.out.println("Print the month (1-12)");
             int month = scan.nextInt();
@@ -534,6 +561,12 @@ public class WolfCity {
         System.out.println( "Edit this member's attributes" );
         System.out.println( "Leave attributes blank to not edit them" );
         System.out.println();
+        System.out.println( "Here are all of the cashiers in the system:" );
+        staffController.printCashierList();
+
+        System.out.println( "Enter cashier editing this member" );
+        final int staffID = scan.nextInt();
+        scan.nextLine();
         System.out.println( "Enter the member's first name" );
         final String firstName = scan.nextLine();
         member.setFirstName( firstName );
@@ -558,7 +591,7 @@ public class WolfCity {
         else {
             member.setActiveStatus( "Inactive" );
         }
-        memberController.updateMemberInformation( member );
+        memberController.updateMemberInformation( member, staffID );
     }
 
     /**

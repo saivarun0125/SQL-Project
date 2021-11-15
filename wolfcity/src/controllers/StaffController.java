@@ -48,7 +48,6 @@ public class StaffController {
             staffID = set.getInt("LAST_INSERT_ID()");
         }
         staff.setStaffID(staffID);
-        System.out.println(staffID);
         StaffType type = staff.getType();
 
         if (type == StaffType.REGISTRATION_OPERATOR) {
@@ -160,6 +159,9 @@ public class StaffController {
         st.setInt(1, staffID);
         ResultSet set = st.executeQuery();
         set.next();
+
+
+
         switch (set.getString("jobTitle")) {
             case "Admin" : deleteAdmin(staffID);
             case "RegistrationOperator": deleteRegistrationOperator(staffID);
@@ -190,7 +192,7 @@ public class StaffController {
      * @throws SQLException e
      */
     public void printWarehouseOperatorList() throws SQLException {
-        String query = "SELECT * FROM WarehouseOperator;";
+        String query = "SELECT * FROM WarehouseOperator w JOIN Staff s on w.staffID = s.staffID;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         ResultSet set = preparedStatement.executeQuery();
         Utility.printResultSet(set);
@@ -201,7 +203,7 @@ public class StaffController {
      * @throws SQLException e
      */
     public void printBillingStaffList() throws SQLException {
-        String query = "SELECT * FROM BillingStaff;";
+        String query = "SELECT * FROM BillingStaff b  JOIN Staff s on b.staffID = s.staffID;;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         ResultSet set = preparedStatement.executeQuery();
         Utility.printResultSet(set);
@@ -212,7 +214,7 @@ public class StaffController {
      * @throws SQLException e
      */
     public void printCashierList() throws SQLException {
-        String query = "SELECT * FROM Cashier;";
+        String query = "SELECT * FROM Cashier c JOIN Staff s on c.staffID = s.staffID;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         ResultSet set = preparedStatement.executeQuery();
         Utility.printResultSet(set);
@@ -223,7 +225,7 @@ public class StaffController {
      * @throws SQLException e
      */
     public void printRegistrationOperatorList() throws SQLException {
-        String query = "SELECT * FROM RegistrationOperator;";
+        String query = "SELECT * FROM RegistrationOperator r JOIN Staff s on r.staffID = s.staffID;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         ResultSet set = preparedStatement.executeQuery();
         Utility.printResultSet(set);
@@ -279,8 +281,19 @@ public class StaffController {
      * @throws SQLException e
      */
     private void deleteBillingStaff(int staffID) throws SQLException {
-        String query = "DELETE FROM BillingStaff WHERE staffID = ?;";
+        String query = "DELETE FROM Bill WHERE staffID = ?;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, staffID);
+        preparedStatement.execute();
+
+
+        query = "DELETE FROM RewardsCheck WHERE staffID = ?;";
+        preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, staffID);
+        preparedStatement.execute();
+
+        query = "DELETE FROM BillingStaff WHERE staffID = ?;";
+        preparedStatement = connection.prepareStatement(query);
         preparedStatement.setInt(1, staffID);
         preparedStatement.execute();
     }
@@ -303,8 +316,26 @@ public class StaffController {
      * @throws SQLException e
      */
     private void deleteCashier(int staffID) throws SQLException {
-        String query = "DELETE FROM Cashier WHERE staffID = ?;";
+        String query = "DELETE tp, at FROM Transaction t " +
+                "LEFT JOIN TransactionProducts tp  ON  t.transactionID = tp.transactionID" +
+                " LEFT JOIN AppliesTo at  ON  at.transactionID = t.transactionID" +
+                " WHERE t.staffID = ?;\n";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, staffID);
+        preparedStatement.execute();
+
+        query = "DELETE FROM Modified WHERE staffID = ?;";
+        preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, staffID);
+        preparedStatement.execute();
+
+        query = "DELETE FROM Transaction WHERE staffID = ?;";
+        preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, staffID);
+        preparedStatement.execute();
+
+        query = "DELETE FROM Cashier WHERE staffID = ?;";
+        preparedStatement = connection.prepareStatement(query);
         preparedStatement.setInt(1, staffID);
         preparedStatement.execute();
     }
