@@ -692,6 +692,7 @@ public class WolfCity {
         final Staff staff = new Staff( -1, name, age, storeID, address, jobTitle, phone, email,
                 java.sql.Timestamp.valueOf( LocalDateTime.now() ), type );
         staffController.enterStaffInformation( staff );
+    	
     }
 
     /**
