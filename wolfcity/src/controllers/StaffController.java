@@ -71,12 +71,10 @@ public class StaffController {
     	
     	connection.beginRequest(); //start the Transaction
 
-<<<<<<< HEAD
         //attempt to insert staff member into Staff table
         String sqlStaff = "INSERT INTO Staff (staffID, name, age, storeID, homeAddress, jobTitle, phoneNumber, email, employmentDate) "
                   + "VALUES (%d, '%s', %d, %d, '%s', '%s', '%s', '%s', NOW())";
         sqlStaff = String.format(sqlStaff, staff.getStaffID(), staff.getName(), staff.getAge(), staff.getStoreID(), staff.getHomeAddress(), staff.getJobTitle(), staff.getPhoneNumber(), staff.getEmail());
-=======
         String select = "SELECT LAST_INSERT_ID();";
         Statement statement = connection.createStatement();
         ResultSet set = statement.executeQuery(select);
@@ -86,7 +84,6 @@ public class StaffController {
         }
         staff.setStaffID(staffID);
         StaffType type = staff.getType();
->>>>>>> branch 'main' of https://github.ncsu.edu/jjboike/csc440_project.git
 
         PreparedStatement preparedStatement = connection.prepareStatement(sqlStaff);
 
