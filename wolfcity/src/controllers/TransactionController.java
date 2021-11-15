@@ -108,7 +108,7 @@ public class TransactionController {
 	 */
 	public void updateTransactionInformation(Transaction t) throws SQLException {
 		calculateTotalPrice(t);
-		String query = "UPDATE Transaction set totalPrice = %d, storeID = %d, memberID = %d, staffID = %d, purchaseDate = '%s' WHERE transactionID = %d;";
+		String query = "UPDATE Transaction set totalPrice = %d, storeID = %d, memberID = %d, staffID = %d, purchaseDate = %s WHERE transactionID = %d;";
 		PreparedStatement preparedStatement = connection.prepareStatement(query);
 		preparedStatement.setFloat(1, t.getTotalPrice());
 		preparedStatement.setInt(2, t.getStoreID());
