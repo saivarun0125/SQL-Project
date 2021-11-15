@@ -1,5 +1,8 @@
 package models;
 
+/**
+ * Represents a log that is put into the database when a member is modified
+ */
 public class Modifies {
     private int    modificationID;
     private int    staffID;

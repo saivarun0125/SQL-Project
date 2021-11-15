@@ -3,10 +3,7 @@ package controllers;
 import models.Member;
 import utilities.Utility;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 /**
  * Handles everything pertaining to adding, editing and deleting a member
@@ -15,6 +12,8 @@ public class MemberController {
 
     /** Database connection */
     private static Connection connection;
+    /** Instance of a TransactionController */
+    private static TransactionController transactionController;
 
     /**
      * Constructs a member controller from a database connection
@@ -23,6 +22,7 @@ public class MemberController {
      */
     public MemberController(Connection connection) throws SQLException {
         MemberController.connection = connection;
+        transactionController = new TransactionController(connection);
     }
 
     /**
@@ -54,7 +54,9 @@ public class MemberController {
      * @param member member
      * @throws SQLException e
      */
-    public void updateMemberInformation(Member member) throws SQLException {
+    public void updateMemberInformation(Member member, int staffID) throws SQLException {
+
+
         String query = "UPDATE Member set firstName = ?, lastName = ?, activeStatus = ?, email = ?, address = ?, phoneNumber = ? WHERE memberID = ?;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setString(1, member.getFirstName());
@@ -65,6 +67,14 @@ public class MemberController {
         preparedStatement.setString(6, member.getPhoneNumber());
         preparedStatement.setInt(7, member.getMemberID());
         preparedStatement.execute();
+
+        String notes = "Status is: " + member.getActiveStatus();
+        String query2 = "INSERT INTO Modified (staffID, memberID, notes) VALUES(?, ?, ?);";
+        PreparedStatement preparedStatement2 = connection.prepareStatement(query2);
+        preparedStatement2.setInt(1, staffID);
+        preparedStatement2.setInt(2, member.getMemberID());
+        preparedStatement2.setString(3, notes);
+        preparedStatement2.execute();
     }
 
     /**
@@ -73,8 +83,38 @@ public class MemberController {
      * @throws SQLException e
      */
     public void deleteMemberInformation(int memberID) throws SQLException {
-        String query = "DELETE FROM Member WHERE memberID = ?;";
+        String query = "DELETE FROM Membership WHERE memberID = ?;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, memberID);
+        preparedStatement.execute();
+
+        query = "DELETE FROM RewardsCheck WHERE memberID = ?;";
+        preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, memberID);
+        preparedStatement.execute();
+
+
+
+        query = "SELECT * FROM Transaction WHERE memberID = ?;";
+        preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, memberID);
+        ResultSet set = preparedStatement.executeQuery();
+        while (set.next()) {
+            transactionController.deleteTransactionInformation(set.getInt("transactionID"));
+        }
+
+        query = "DELETE FROM Cancels WHERE memberID = ?;";
+        preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, memberID);
+        preparedStatement.execute();
+
+        query = "DELETE FROM Modified WHERE memberID = ?;";
+        preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, memberID);
+        preparedStatement.execute();
+
+        query = "DELETE FROM Member WHERE memberID = ?;";
+        preparedStatement = connection.prepareStatement(query);
         preparedStatement.setInt(1, memberID);
         preparedStatement.execute();
     }

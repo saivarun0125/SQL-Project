@@ -1,5 +1,8 @@
 package models;
 
+/**
+ * Store that is managed by a manager
+ */
 public class Store {
 
     private String phone;

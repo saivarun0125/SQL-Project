@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Shipment class
+ */
 public class Shipment {
 	
 	private int shipmentID;
@@ -11,8 +14,10 @@ public class Shipment {
 	private Type type;
 	private int originWarehouseID;
 	private int destinationStoreID;
+	/** Map stores productID and its quantity */
 	private HashMap<Integer, Integer> products;
-	
+
+
 	public Shipment(int shipmentID, int staffID, Type type, int originWarehouseID, int destinationStoreID, HashMap<Integer, Integer> products) {
 		this.shipmentID = shipmentID;
 		this.staffID = staffID;

@@ -113,7 +113,8 @@ public class ReportController {
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setInt(1, year);
         ResultSet set = preparedStatement.executeQuery();
-        Utility.printResultSet(set);
+        set.next();
+        System.out.println("Number of new customers in the year: " + set.getFloat("SUM(*)"));
     }
 
     /**
@@ -129,7 +130,8 @@ public class ReportController {
         preparedStatement.setInt(2, year);
 
         ResultSet set = preparedStatement.executeQuery();
-        Utility.printResultSet(set);
+        set.next();
+        System.out.println("Number of new customers in the month: " + set.getFloat("SUM(*)"));
     }
 
     /**
@@ -137,12 +139,14 @@ public class ReportController {
      * @param memberID id of the member
      * @throws SQLException e
      */
-    public void getCustomerTotalPurchaseAmount(int memberID) throws SQLException {
-        String query = "SELECT SUM(totalPrice) FROM Transaction WHERE memberID = ?;";
+    public void getCustomerTotalPurchaseAmount(int memberID, Timestamp startDate, Timestamp endDate) throws SQLException {
+        String query = "SELECT SUM(totalPrice) FROM Transaction WHERE memberID = ? and purchaseDate BETWEEN ? AND LAST_DAY(?);";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setInt(1, memberID);
+        preparedStatement.setTimestamp(2, startDate);
+        preparedStatement.setTimestamp(3, endDate);
         ResultSet set = preparedStatement.executeQuery();
-        Utility.printResultSet(set);
+        set.next();
+        System.out.println("Total customer purchase amount: $" + set.getFloat("SUM(totalPrice)"));
     }
-
 }

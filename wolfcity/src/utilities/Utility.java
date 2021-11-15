@@ -39,7 +39,6 @@ public class Utility {
      */
     public static Timestamp getTimestampObject(int year, int month, int day) {
         GregorianCalendar date = new GregorianCalendar(year, month, day);
-        System.out.print(date.toString());
         long ms = date.getTimeInMillis();
         return new Timestamp(ms);
     }
