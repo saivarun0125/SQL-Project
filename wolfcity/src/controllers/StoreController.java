@@ -1,6 +1,7 @@
 package controllers;
 
 import models.Store;
+import models.Transaction;
 import utilities.Utility;
 
 import java.sql.Connection;
@@ -15,6 +16,8 @@ public class StoreController {
     /** Database connection */
     private static Connection connection;
 
+    private static TransactionController transactionController;
+
     /**
      * Constructs a StoreController object
      * @param connection connection
@@ -22,6 +25,7 @@ public class StoreController {
      */
     public StoreController(Connection connection) throws SQLException {
         StoreController.connection = connection;
+        transactionController = new TransactionController(connection);
     }
 
     /**
@@ -77,6 +81,14 @@ public class StoreController {
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setInt(1, storeID);
         preparedStatement.execute();
+
+        query = "SELECT * FROM Transaction WHERE storeID = ?;";
+        preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, storeID);
+        ResultSet set = preparedStatement.executeQuery();
+        while (set.next()) {
+            transactionController.deleteTransactionInformation(set.getInt("transactionID"));
+        }
 
         query = "UPDATE Staff set storeID = ? WHERE storeID = ?;";
         preparedStatement = connection.prepareStatement(query);
