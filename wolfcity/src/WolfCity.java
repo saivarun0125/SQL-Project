@@ -774,7 +774,9 @@ public class WolfCity {
         System.out.println( "Enter the store's phone number" );
         final String phone = scan.nextLine();
         store.setPhone( phone );
-        System.out.println( "Enter the store's manager" );
+        System.out.println("Here are all of the admins in the system");
+        staffController.printAdminList();
+        System.out.println( "Enter the store's manager's ID" );
         final int staffID = scan.nextInt();
         scan.nextLine();
         store.setStaffID( staffID );

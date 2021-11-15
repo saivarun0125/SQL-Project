@@ -67,8 +67,26 @@ public class StoreController {
      * @throws SQLException e
      */
     public void deleteStoreInformation(int storeID) throws SQLException {
-        String query = "DELETE FROM Store WHERE storeID = ?;";
+        String query = "DELETE si, i, sh\n" +
+                "FROM Store s \n" +
+                "  LEFT JOIN StoreInventory si  ON  si.storeID = s.storeID\n" +
+                "  LEFT JOIN Inventory i ON  i.inventoryID = si.inventoryID\n" +
+                "  LEFT JOIN Shipment sh ON  sh.destinationStoreID = s.storeID\n" +
+                "WHERE\n" +
+                "    s.storeID = ?;";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, storeID);
+        preparedStatement.execute();
+
+        query = "UPDATE Staff set storeID = ? WHERE storeID = ?;";
+        preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setNull(1,java.sql.Types.INTEGER);
+        preparedStatement.setInt(2, storeID);
+        preparedStatement.execute();
+
+
+        query = "DELETE FROM Store WHERE storeID = ?;";
+        preparedStatement = connection.prepareStatement(query);
         preparedStatement.setInt(1, storeID);
         preparedStatement.execute();
     }

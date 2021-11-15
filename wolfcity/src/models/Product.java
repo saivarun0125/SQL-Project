@@ -1,5 +1,8 @@
 package models;
 
+/**
+ * Product class
+ */
 public class Product {
     private int productID;
     private String productName;

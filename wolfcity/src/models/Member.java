@@ -1,5 +1,8 @@
 package models;
 
+/**
+ * Club Member class
+ */
 public class Member {
 
     // Set to -1 if object has not been created yet

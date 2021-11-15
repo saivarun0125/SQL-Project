@@ -2,6 +2,9 @@ package models;
 
 import java.sql.Timestamp;
 
+/**
+ * Membership class
+ */
 public class Membership {
     private int memberID;
     private int staffID;

@@ -199,6 +199,17 @@ public class StaffController {
     }
 
     /**
+     * Print the list of existing admins
+     * @throws SQLException e
+     */
+    public void printAdminList() throws SQLException {
+        String query = "SELECT * FROM Admin a JOIN Staff s on a.staffID = s.staffID;";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        ResultSet set = preparedStatement.executeQuery();
+        Utility.printResultSet(set);
+    }
+
+    /**
      * Print the existing billing staff in the system
      * @throws SQLException e
      */

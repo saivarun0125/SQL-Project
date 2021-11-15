@@ -2,6 +2,9 @@ package models;
 
 import java.sql.Timestamp;
 
+/**
+ * The inventory stores an amount, which product it is, and expiration and manufacturing dates
+ */
 public class Inventory {
     private int inventoryID;
     private int amount;

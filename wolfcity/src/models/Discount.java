@@ -2,6 +2,10 @@ package models;
 
 import java.sql.Timestamp;
 
+/**
+ * Represents a discount on a given product
+ * It can only be used during a specific time period
+ */
 public class Discount {
 
     private int discountID;

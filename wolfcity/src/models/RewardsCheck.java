@@ -1,5 +1,8 @@
 package models;
 
+/**
+ * Rewards Check that can be generated
+ */
 public class RewardsCheck {
 	
 //	RewardsCheck(checkID, amount, staffID, memberID)

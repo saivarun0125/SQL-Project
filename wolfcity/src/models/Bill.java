@@ -2,6 +2,9 @@ package models;
 
 import java.sql.Timestamp;
 
+/**
+ * Represents a bill that is due to be payed to a supplier
+ */
 public class Bill {
 	
 //	Bill(billID, staffID, supplierID, amount, issueDate, dueDate)

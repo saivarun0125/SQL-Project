@@ -3,6 +3,16 @@ package models;
 import java.sql.Date;
 import java.sql.Timestamp;
 
+/**
+ * Staff members can be 3 different kinds:
+ * Cashier
+ * RegistrationOperator
+ * Admin
+ * WarehouseOperator
+ * BillingStaff
+ *
+ * Admins are able to do all operations
+ */
 public class Staff {
     // Set to -1 if object has not been created yet
 
