@@ -28,19 +28,19 @@ public class StaffController {
      * @param staff staff
      * @throws SQLException e
      */
-    public boolean enterStaffInformation(Staff staff) throws SQLException {
-//        String query = "INSERT INTO Staff (name, age, storeID, homeAddress, jobTitle, phoneNumber, email, employmentDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
-//        PreparedStatement preparedStatement = connection.prepareStatement(query);
-//        preparedStatement.setString(1, staff.getName());
-//        preparedStatement.setInt(2, staff.getAge());
-//        preparedStatement.setInt(3, staff.getStoreID());
-//        preparedStatement.setString(4, staff.getHomeAddress());
-//        preparedStatement.setString(5, staff.getJobTitle());
-//        preparedStatement.setString(6, staff.getPhoneNumber());
-//        preparedStatement.setString(7, staff.getEmail());
-//        preparedStatement.setTimestamp(8, staff.getEmploymentDate());
-//         preparedStatement.executeQuery();
-//
+    public void enterStaffInformation(Staff staff) throws SQLException {
+        String query = "INSERT INTO Staff (name, age, storeID, homeAddress, jobTitle, phoneNumber, email, employmentDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setString(1, staff.getName());
+        preparedStatement.setInt(2, staff.getAge());
+        preparedStatement.setInt(3, staff.getStoreID());
+        preparedStatement.setString(4, staff.getHomeAddress());
+        preparedStatement.setString(5, staff.getJobTitle());
+        preparedStatement.setString(6, staff.getPhoneNumber());
+        preparedStatement.setString(7, staff.getEmail());
+        preparedStatement.setTimestamp(8, staff.getEmploymentDate());
+         preparedStatement.executeQuery();
+
         String select = "SELECT LAST_INSERT_ID();";
         Statement statement = connection.createStatement();
         ResultSet set = statement.executeQuery(select);
@@ -51,7 +51,7 @@ public class StaffController {
         staff.setStaffID(staffID);
         System.out.println(staffID);
         StaffType type = staff.getType();
-        
+
         if (type == StaffType.REGISTRATION_OPERATOR) {
             createRegistrationOperator(staffID);
         } else if (type == StaffType.CASHIER) {
@@ -67,52 +67,7 @@ public class StaffController {
         } else if (type == StaffType.BILLING_STAFF) {
             createBillingStaff(staffID);
         }
-    
-    	
-    	connection.beginRequest(); //start the Transaction
 
-        //attempt to insert staff member into Staff table
-        String sqlStaff = "INSERT INTO Staff (staffID, name, age, storeID, homeAddress, jobTitle, phoneNumber, email, employmentDate) "
-                  + "VALUES (%d, '%s', %d, %d, '%s', '%s', '%s', '%s', NOW())";
-        sqlStaff = String.format(sqlStaff, staff.getStaffID(), staff.getName(), staff.getAge(), staff.getStoreID(), staff.getHomeAddress(), staff.getJobTitle(), staff.getPhoneNumber(), staff.getEmail());
-        String select = "SELECT LAST_INSERT_ID();";
-        Statement statement = connection.createStatement();
-        ResultSet set = statement.executeQuery(select);
-        int staffID = -1;
-        if (set.next()) {
-            staffID = set.getInt("LAST_INSERT_ID()");
-        }
-        staff.setStaffID(staffID);
-        StaffType type = staff.getType();
-
-        PreparedStatement preparedStatement = connection.prepareStatement(sqlStaff);
-
-        if(!preparedStatement.execute(sqlStaff)) {
-          //rollback if failed
-          System.out.println("Couldn't add staff member to Staff table");
-          connection.rollback();
-          return false;
-        }
-
-        System.out.println(sqlStaff);
-
-        String sqlJobTitle = "INSERT INTO (staffID)" + staff.getJobTitle() + " VALUES ( %d )";
-        sqlJobTitle = String.format(sqlJobTitle, staff.getStaffID());
-
-        //attempt to insert staff member into specific job table
-        //Cashier, RegistrationOperator, Admin, BillingStaff, Cashier
-        if (staff.getJobTitle() != null) {
-          if (!preparedStatement.execute(sqlJobTitle)) {
-            //rollback if railed
-            System.out.println("Couldn't add " + staff.getJobTitle() + " to " + staff.getJobTitle() + "table.");
-            connection.rollback();
-            return false;
-          }
-        }
-
-
-        connection.commit(); //commit transaction
-        return true;
 
     }
 
